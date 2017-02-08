@@ -23,29 +23,38 @@ object ModuleBotCourtesy : IModule {
             message.reply("I'm here!")
         }
 
-        if (message.content.toLowerCase().containsAtLeastTwo("hey bot", "what's", "your", "opinion", "about", "think", "on")) {
+        if (message.content.toLowerCase().containsAtLeastTwo("hey bot", "what's", "your", "opinion", "about", "think", "on", "yo bot")) {
             if(message.mentions.size == 1)
-                if(message.mentions[0].name.toLowerCase().contains("kitten"))
+                if(message.mentions.any { "tris" in it.name || "kitten" in it.name || "luna" in it.name })
                     message.reply(selectMeme(message.content.toLowerCase(), "She", "She's"))
+                else if(message.mentions.any { it.name == message.author.name }) message.reply(selectMeme(message.content.toLowerCase(), "You", "You're", false))
                 else message.reply(selectMeme(message.content.toLowerCase(), "He", "He's"))
             else if(message.mentions.size > 1 || message.content.replace("?", "").endsWith("s"))
                 message.reply(selectMeme(message.content.toLowerCase(), "They", "They're", false))
+            else if("me" in message.content || message.mentions.any { it.name == message.author.name })
+                message.reply(selectMeme(message.content.toLowerCase(), "You", "You're", false))
             else message.reply(selectMeme(message.content.toLowerCase()))
         }
 
         return super.onMessage(api, message)
     }
+    var x = 0
     fun selectMeme(string: String, pronoun: String = "It", pronounBe: String = "It's", presSim: Boolean = true): String {
 
         val seed = string.intern().hashCode().toLong();
         val negativeMemes = listOf<String>("octuple", "enderium", "trump", "nazi", "java", "hitler", "occ")
         val elucent = listOf("elucent", "roots", "elu", "embers", "goetia")
+        val math = listOf("math")
         if (elucent.any { it in string }) {
             val quotes = listOf("wtf is that?", "dunno what it is but sounds shitty", "sounds broken, explain")
             val quote = quotes[Random(seed).nextInt(quotes.size)]
             return quote
         } else if (negativeMemes.any { it in string }) {
             val quotes = listOf("not rly dank", "not cool, bro", "nah, not great", "wtf is that idea even", "WHY")
+            val quote = quotes[Random(seed).nextInt(quotes.size)]
+            return quote
+        } else if (math.any { it in string }) {
+            val quotes = listOf("+x+++++x = ${+x+++ ++x}")
             val quote = quotes[Random(seed).nextInt(quotes.size)]
             return quote
         } else {
@@ -58,6 +67,6 @@ object ModuleBotCourtesy : IModule {
         }
 
     }
-
     fun String.containsAtLeastTwo(vararg string: String) = string.count { it in this } > 2
+
 }

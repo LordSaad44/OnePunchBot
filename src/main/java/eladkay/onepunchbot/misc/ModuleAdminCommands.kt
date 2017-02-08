@@ -9,7 +9,7 @@ import eladkay.onepunchbot.IModule
  */
 object ModuleAdminCommands : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
-        if (message.content.startsWith("!giveall ", true) && message.author.name == "Eladkay") {
+        if (message.content.startsWith("!giveall ", true) && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {
             val rank = message.channelReceiver.server.roles.firstOrNull { it.name == message.content.replace("!giveall ", "") }
             for (player in message.channelReceiver.server.members) {
                 if (!player.getRoles(message.channelReceiver.server).contains(rank)) {
