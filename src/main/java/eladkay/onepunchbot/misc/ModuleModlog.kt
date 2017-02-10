@@ -41,25 +41,25 @@ object ModuleModlog : IModule {
 
     override fun onUserChangeNick(api: DiscordAPI, server: Server, user: User, oldnick: String): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        modlog.sendMessage("${user.name} changed their nick from $oldnick to ${user.getNickname(server)}")
+        modlog.sendMessage("${user.name}'s nickname was changed from $oldnick to ${user.getNickname(server)}")
         return super.onUserChangeNick(api, server, user, oldnick)
     }
 
     override fun onMemberUnban(api: DiscordAPI, userid: String, server: Server): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        modlog.sendMessage("$userid is unbanned")
+        modlog.sendMessage("$userid was unbanned")
         return super.onMemberUnban(api, userid, server)
     }
 
     override fun onMemberAdd(api: DiscordAPI, userid: User, server: Server): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        modlog.sendMessage("${userid.name} joined")
+        modlog.sendMessage("${userid.name} joined the server")
         return super.onMemberAdd(api, userid, server)
     }
 
     override fun onMemberRemove(api: DiscordAPI, userid: User, server: Server): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        modlog.sendMessage("${userid.name} left")
+        modlog.sendMessage("${userid.name} left the server")
         return super.onMemberRemove(api, userid, server)
     }
 
