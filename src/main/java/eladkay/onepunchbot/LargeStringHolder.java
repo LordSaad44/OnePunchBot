@@ -13,7 +13,7 @@ public class LargeStringHolder {
             "Hello?\n" +
             "- Barry?\n" +
             "- Adam?\n" +
-            "- Oan you believe this is happening?\n" +
+            "- Can you believe this is happening?\n" +
             "- I can't. I'll pick you up.\n" +
             "Looking sharp.\n" +
             "Use the stairs. Your father paid good money for those.\n" +
