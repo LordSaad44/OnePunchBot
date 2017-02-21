@@ -27,7 +27,7 @@ object Holder {
  */
 fun main(args: Array<String>) {
     val modules = listOf<IModule>(
-            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation
+            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals
             //,ModuleDebug
     )
     val api0 = Javacord.getApi(token, true)
@@ -157,7 +157,7 @@ interface IModule {
         return false
     }
 
-    fun onUserChangeNick(api: DiscordAPI, server: Server, user: User, oldnick: String): Boolean {
+    fun onUserChangeNick(api: DiscordAPI, server: Server, user: User, oldnick: String?): Boolean {
         return false
     }
 

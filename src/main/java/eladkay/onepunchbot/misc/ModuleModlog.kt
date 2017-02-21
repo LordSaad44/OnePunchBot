@@ -39,9 +39,9 @@ object ModuleModlog : IModule {
         return super.onUserRoleRemoved(api, user, role)
     }
 
-    override fun onUserChangeNick(api: DiscordAPI, server: Server, user: User, oldnick: String): Boolean {
+    override fun onUserChangeNick(api: DiscordAPI, server: Server, user: User, oldnick: String?): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        modlog.sendMessage("${user.name}'s nickname was changed from $oldnick to ${user.getNickname(server)}")
+        modlog.sendMessage("${user.name}'s nickname was changed from ${oldnick ?: "no nick"} to ${user.getNickname(server)}")
         return super.onUserChangeNick(api, server, user, oldnick)
     }
 
@@ -65,7 +65,7 @@ object ModuleModlog : IModule {
 
     override fun onMemberBan(api: DiscordAPI, userid: User, server: Server): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        modlog.sendMessage("${userid.name} was banned")
+        modlog.sendMessage("${userid.name} was banned from the server")
         return super.onMemberBan(api, userid, server)
     }
 
