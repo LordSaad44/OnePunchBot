@@ -41,7 +41,8 @@ object ModuleModlog : IModule {
 
     override fun onUserChangeNick(api: DiscordAPI, server: Server, user: User, oldnick: String?): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        modlog.sendMessage("${user.name}'s nickname was changed from ${oldnick ?: "no nick"} to ${user.getNickname(server)}")
+        if (oldnick != null) modlog.sendMessage("${user.name}'s nickname was changed from ${oldnick} to ${user.getNickname(server)}")
+        else modlog.sendMessage("${user.name}'s nickname was set to ${user.getNickname(server)}")
         return super.onUserChangeNick(api, server, user, oldnick)
     }
 
