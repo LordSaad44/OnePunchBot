@@ -14,16 +14,19 @@ object ModuleModlog : IModule {
     val handle = { a: String -> a.replace("`", "'"); "`$a`" }
     override fun onMessageDeleted(api: DiscordAPI, message: Message): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        if("<:autorip:277120850975653900>" !in message.content)
-            modlog.sendMessage("Message by ${message.author.name} deleted: \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")
-        else
-            modlog.sendMessage("Self destructing message by ${message.author.name} timed out: \"${handle(message.content)}\" in channel #${message.channelReceiver.name} after ${(5000 * "<:autorip:277120850975653900>".toRegex().findAll(message.content).toList().size.toLong())/1000} seconds")
+        if (message.channelReceiver != modlog) {
+            if("<:autorip:277120850975653900>" !in message.content)
+                modlog.sendMessage("Message by ${message.author.name} deleted: \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")
+            else
+                modlog.sendMessage("Self destructing message by ${message.author.name} timed out: \"${handle(message.content)}\" in channel #${message.channelReceiver.name} after ${(5000 * "<:autorip:277120850975653900>".toRegex().findAll(message.content).toList().size.toLong())/1000} seconds")
+        }
         return super.onMessageDeleted(api, message)
     }
 
     override fun onMessageEdited(api: DiscordAPI, message: Message, old: String): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        modlog.sendMessage("Message by ${message.author.name} edited: \"${handle(old)}\" -> \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")
+        if (message.channelReceiver != modlog)
+            modlog.sendMessage("Message by ${message.author.name} edited: \"${handle(old)}\" -> \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")
         return super.onMessageEdited(api, message, old)
     }
 
@@ -41,7 +44,9 @@ object ModuleModlog : IModule {
 
     override fun onUserChangeNick(api: DiscordAPI, server: Server, user: User, oldnick: String?): Boolean {
         val modlog = api.servers.toMutableList()[0].channels.first { it.name == "modlog" }
-        if (oldnick != null) modlog.sendMessage("${user.name}'s nickname was changed from ${oldnick} to ${user.getNickname(server)}")
+        val newNick = user.getNickname(server)
+        if (newNick == null) modlog.sendMessage("${user.name}'s nickname was removed (was ${oldnick})")
+        else if (oldnick != null) modlog.sendMessage("${user.name}'s nickname was changed from ${oldnick} to ${newNick}")
         else modlog.sendMessage("${user.name}'s nickname was set to ${user.getNickname(server)}")
         return super.onUserChangeNick(api, server, user, oldnick)
     }
