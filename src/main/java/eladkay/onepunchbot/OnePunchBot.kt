@@ -24,7 +24,7 @@ object Holder {
  */
 fun main(args: Array<String>) {
     val modules = listOf<IModule>(
-            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup
+            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup, ModulePoll
             //,ModuleDebug
     )
     val api0 = Javacord.getApi(token, true)
