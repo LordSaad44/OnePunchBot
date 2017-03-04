@@ -14,7 +14,7 @@ public class LargeStringHolder {
             "Yellow, black. Yellow, black. Yellow, black. Yellow, black.\n" +
             "Ooh, black and yellow! Let's shake it up a little.\n" +
             "Barry! Breakfast is ready!\n" +
-            "Ooming!\n" +
+            "Coming!\n" +
             "Hang on a second.\n" +
             "Hello?\n" +
             "- Barry?\n" +

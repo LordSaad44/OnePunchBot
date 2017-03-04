@@ -44,7 +44,7 @@ fun main(args: Array<String>) {
                     modules.forEach { if (it.onMessageDeleted(api, message)) return@forEach }
                 } catch(t: Throwable) {
                     val server = message.channelReceiver.server
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(de.btobastian.javacord.listener.message.MessageEditListener {
@@ -54,7 +54,7 @@ fun main(args: Array<String>) {
                     modules.forEach { it.processMessageOrEdit(message) }
                 } catch(t: Throwable) {
                     val server = message.channelReceiver.server
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(de.btobastian.javacord.listener.user.UserRoleAddListener {
@@ -63,7 +63,7 @@ fun main(args: Array<String>) {
                     modules.forEach { if (it.onUserRoleAdded(api, user, role)) return@forEach }
                 } catch(t: Throwable) {
                     val server = role.server
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(de.btobastian.javacord.listener.user.UserRoleRemoveListener {
@@ -72,7 +72,7 @@ fun main(args: Array<String>) {
                     modules.forEach { if (it.onUserRoleRemoved(api, user, role)) return@forEach }
                 } catch(t: Throwable) {
                     val server = role.server
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(de.btobastian.javacord.listener.user.UserChangeNicknameListener {
@@ -80,7 +80,7 @@ fun main(args: Array<String>) {
                 try {
                     modules.forEach { if (it.onUserChangeNick(api, server, user, oldnick)) return@forEach }
                 } catch(t: Throwable) {
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(de.btobastian.javacord.listener.server.ServerMemberUnbanListener {
@@ -88,7 +88,7 @@ fun main(args: Array<String>) {
                 try {
                     modules.forEach { if (it.onMemberUnban(api, userid, server)) return@forEach }
                 } catch(t: Throwable) {
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(de.btobastian.javacord.listener.server.ServerMemberRemoveListener {
@@ -96,7 +96,7 @@ fun main(args: Array<String>) {
                 try {
                     modules.forEach { if (it.onMemberRemove(api, user, server)) return@forEach }
                 } catch(t: Throwable) {
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(de.btobastian.javacord.listener.server.ServerMemberAddListener {
@@ -104,7 +104,7 @@ fun main(args: Array<String>) {
                 try {
                     modules.forEach { if (it.onMemberAdd(api, user, server)) return@forEach }
                 } catch(t: Throwable) {
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(de.btobastian.javacord.listener.server.ServerMemberBanListener {
@@ -112,7 +112,7 @@ fun main(args: Array<String>) {
                 try {
                     modules.forEach { if (it.onMemberBan(api, user, server)) return@forEach }
                 } catch(t: Throwable) {
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
             api.registerListener(MessageCreateListener {
@@ -122,7 +122,7 @@ fun main(args: Array<String>) {
                     modules.forEach { it.processMessageOrEdit(message) }
                 } catch(t: Throwable) {
                     val server = message.channelReceiver.server
-                    Holder.adminChannels[server.id]!!.sendMessage(t.toString())
+                    Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })
         }

@@ -23,7 +23,7 @@ object ModuleBotCourtesy : IModule {
             message.reply("I'm here!")
         }
 
-        if (message.content.toLowerCase().containsAtLeastTwo("hey bot", "what's", "your", "opinion", "about", "think", "on", "yo bot")) {
+        if (message.content.toLowerCase().containsAtLeastTwo("hey bot", "what's", "your", "opinion", "about", "think", "on", "yo bot") && "bot" in message.content) {
             if(message.mentions.size == 1)
                 if(message.mentions.any { "tris" in it.name || "kitten" in it.name || "luna" in it.name })
                     message.reply(selectMeme(message.content.toLowerCase(), "She", "She's"))

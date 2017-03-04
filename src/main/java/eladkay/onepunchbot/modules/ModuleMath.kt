@@ -12,7 +12,7 @@ import java.math.BigDecimal
 object ModuleMath : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if("hey bot, math " in message.content.toLowerCase()) {
-            val expression = message.content.replace("hey bot, math" , "", ignoreCase = true)
+            val expression = message.content.replace("hey bot, math " , "", ignoreCase = true)
             val exp = ExpressionBot(expression)
             message.reply(exp.eval().toPlainString())
         }
