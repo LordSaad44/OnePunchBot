@@ -1,4 +1,4 @@
-package eladkay.onepunchbot.shell
+package eladkay.onepunchbot.modules
 
 import de.btobastian.javacord.DiscordAPI
 import eladkay.onepunchbot.IModule
@@ -8,7 +8,8 @@ import eladkay.onepunchbot.IModule
  */
 object ModuleShellReader : IModule {
     override fun onInit(api: DiscordAPI) {
-        Thread {
+        //todo
+        /*Thread {
             while (true) {
                 val read = KotlinShell.read()
                 if (read != "" && read.contains(">"))
@@ -16,7 +17,7 @@ object ModuleShellReader : IModule {
                 Thread.sleep(200)
                 if ("```$read```".length > 2000) api.servers.toMutableList()[0].channels.first { it.name == "shell" }.sendMessage("Message is too long!")
             }
-        }.start()
+        }.start()*/
     }
 }
 object KotlinShell {

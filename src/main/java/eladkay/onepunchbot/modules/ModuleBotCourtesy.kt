@@ -1,4 +1,4 @@
-package eladkay.onepunchbot.misc
+package eladkay.onepunchbot.modules
 
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.message.Message
@@ -43,7 +43,7 @@ object ModuleBotCourtesy : IModule {
 
         val seed = string.intern().hashCode().toLong();
         val negativeMemes = listOf<String>("octuple", "enderium", "trump", "nazi", "java", "hitler", "occ")
-        val elucent = listOf("elucent", "roots", "elu", "embers", "goetia")
+        val elucent = listOf<String>(/*"elucent", "roots", "elu", "embers", "goetia"*/)
         val math = listOf("math")
         if (elucent.any { it in string }) {
             val quotes = listOf("wtf is that?", "dunno what it is but sounds shitty", "sounds broken, explain")

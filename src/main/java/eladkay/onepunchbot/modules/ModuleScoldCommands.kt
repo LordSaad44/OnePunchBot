@@ -1,4 +1,4 @@
-package eladkay.onepunchbot.scold
+package eladkay.onepunchbot.modules
 
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.User

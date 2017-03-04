@@ -1,4 +1,4 @@
-package eladkay.onepunchbot.misc
+package eladkay.onepunchbot.modules
 
 import com.udojava.evalex.Expression
 import de.btobastian.javacord.DiscordAPI

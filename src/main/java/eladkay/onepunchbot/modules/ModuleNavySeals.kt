@@ -1,4 +1,4 @@
-package eladkay.onepunchbot.misc
+package eladkay.onepunchbot.modules
 
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.message.Message
@@ -15,8 +15,10 @@ object ModuleNavySeals : IModule {
                 message.reply(LargeStringHolder.NAVY_SEAL_KT)
             else if("<:balance:270964604438315020>" in message.content)
                 message.reply(LargeStringHolder.NAVY_SEAL_MC)
-            else if(" <:latin:282944396112953344>" in message.content)
+            else if("<:latin:282944396112953344>" in message.content)
                 message.reply(LargeStringHolder.NAVY_SEAL_LATIN)
+            else if("🤗" in message.content)
+                message.reply(LargeStringHolder.NAVY_SEAL_FRIENDLINESS)
             else message.reply(LargeStringHolder.NAVY_SEAL)
         return super.onMessage(api, message)
     }

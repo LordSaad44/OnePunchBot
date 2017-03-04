@@ -1,4 +1,4 @@
-package eladkay.onepunchbot.misc
+package eladkay.onepunchbot.modules
 
 import de.btobastian.javacord.entities.message.Message
 import eladkay.onepunchbot.IModule

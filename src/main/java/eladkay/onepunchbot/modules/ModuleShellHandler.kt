@@ -1,4 +1,4 @@
-package eladkay.onepunchbot.shell
+package eladkay.onepunchbot.modules
 
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.message.Message
@@ -11,6 +11,8 @@ object ModuleShellHandler : IModule {
     private var shell: Boolean = false
 
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
+        //todo
+        /*
         if (message.channelReceiver.name.equals("shell", true) && message.content.startsWith("!toggleshell", true) && message.author.name == "Eladkay") {
             shell = !shell
             message.reply("shell = $shell")
@@ -27,7 +29,7 @@ object ModuleShellHandler : IModule {
             println("Writing to KTShell: ${message.content}")
             KotlinShell.write(message.content.replace("!execute", ""))
             //Sheller.write(message.content)
-        }
+        }*/
         return super.onMessage(api, message)
     }
 }
