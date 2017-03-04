@@ -28,6 +28,9 @@ object ModuleSetup : IModule {
             reply("If you see any errors, please make an Admins role with every permission and apply it to the bot temporarily.")
             val server = message.channelReceiver.server
             var adminRole: Role? = null
+            if(!api.yourself.getRoles(server).any { it.permissions.getState(PermissionType.ADMINISTATOR) == PermissionState.ALLOWED }) {
+                reply("Please give the bot an admin role before proceeding.")
+            }
             if(!server.roles.any { it.name == "Admins" }) {
                 reply("Creating Admins role...")
                 doTryCatched { server.createRole().get().apply { updateName("Admins") }.apply { adminRole = this } }
@@ -39,7 +42,7 @@ object ModuleSetup : IModule {
                     val permissionsAllowed = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.ALLOWED).build()
                     val permissionsDenied = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.DENIED).build()
                     val everyone: Role = server.roles.firstOrNull { it.name == "@everyone" } ?: throw RuntimeException("No everyone role?")
-                    server.createChannel("admin-only").get().apply { updateOverwrittenPermissions(adminRole!!, permissionsAllowed) }.apply { updateOverwrittenPermissions(everyone, permissionsDenied) }.apply { Holder.adminChannels.replace(server.id, this) }
+                    server.createChannel("admin-only").get().apply { updateOverwrittenPermissions(adminRole!!, permissionsAllowed) }.apply { updateOverwrittenPermissions(everyone, permissionsDenied) }.apply { Holder.adminChannels.put(server.id, this) }
                 }
                 reply("Done.")
             }

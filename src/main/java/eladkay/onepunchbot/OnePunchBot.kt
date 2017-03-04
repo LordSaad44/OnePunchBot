@@ -10,10 +10,7 @@ import de.btobastian.javacord.entities.message.Message
 import de.btobastian.javacord.entities.permissions.Role
 import de.btobastian.javacord.listener.message.MessageCreateListener
 import de.btobastian.javacord.listener.message.MessageDeleteListener
-import eladkay.onepunchbot.misc.*
-import eladkay.onepunchbot.modules.ModuleScoldCommands
-import eladkay.onepunchbot.modules.ModuleShellHandler
-import eladkay.onepunchbot.modules.ModuleShellReader
+import eladkay.onepunchbot.modules.*
 
 
 val token = tokenHeld
@@ -27,7 +24,7 @@ object Holder {
  */
 fun main(args: Array<String>) {
     val modules = listOf<IModule>(
-            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals
+            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup
             //,ModuleDebug
     )
     val api0 = Javacord.getApi(token, true)
