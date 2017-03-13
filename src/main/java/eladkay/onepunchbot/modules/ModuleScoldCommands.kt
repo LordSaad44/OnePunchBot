@@ -13,7 +13,8 @@ import eladkay.onepunchbot.IModule
  */
 object ModuleScoldCommands : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
-        if (message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" } && message.content.startsWith("!scold ", true)) {
+        if(message.channelReceiver?.server == null) return true
+        if (message.author.getRoles(message.channelReceiver?.server).any { it.name == "Admins" } && message.content.startsWith("!scold ", true)) {
             val server = message.channelReceiver.server
             val everyone: Role? = server.roles.firstOrNull { it.name == "@everyone" } ?: throw RuntimeException("g")
             val userName = message.content.replace("!scold ", "")

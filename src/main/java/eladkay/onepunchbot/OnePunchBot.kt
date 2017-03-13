@@ -24,7 +24,7 @@ object Holder {
  */
 fun main(args: Array<String>) {
     val modules = listOf<IModule>(
-            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup, ModulePoll
+            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup, ModulePoll, ModuleConduit
             //,ModuleDebug
     )
     val api0 = Javacord.getApi(token, true)
@@ -118,10 +118,15 @@ fun main(args: Array<String>) {
             api.registerListener(MessageCreateListener {
                 api, message ->
                 try {
-                    if (message.author.isYourself) return@MessageCreateListener; modules.forEach { if (it.onMessage(api, message)) return@forEach }
+                    if (message.author.isYourself) return@MessageCreateListener
+                    modules.forEach { if (it.onMessage(api, message)) return@forEach }
                     modules.forEach { it.processMessageOrEdit(message) }
                 } catch(t: Throwable) {
-                    val server = message.channelReceiver.server
+                    val server: Server? = message.channelReceiver?.server
+                    if(server == null) {
+                        message.reply(t.stackTrace.joinToString("\n"))
+                        return@MessageCreateListener
+                    }
                     Holder.adminChannels[server.id]?.sendMessage(t.toString())
                 }
             })

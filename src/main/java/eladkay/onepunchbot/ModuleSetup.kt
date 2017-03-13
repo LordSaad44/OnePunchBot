@@ -32,7 +32,7 @@ object ModuleSetup : IModule {
             }
             Thread.sleep(50)
         }
-        val server = message.channelReceiver.server
+        val server = message.channelReceiver?.server ?: return true
         var adminRole: Role? = null
         if(message.channelReceiver.name == "setup" && message.content == "!startsetup") {
             reply("Welcome to One Punch Bot!")

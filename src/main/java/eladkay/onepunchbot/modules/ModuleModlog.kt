@@ -14,7 +14,7 @@ object ModuleModlog : IModule {
     val handle = { a: String -> a.replace("`", "'"); "`$a`" }
     override fun onMessageDeleted(api: DiscordAPI, message: Message): Boolean {
         val modlog = message.channelReceiver.server.channels.firstOrNull { it.name == "modlog" } ?: return super.onMessageDeleted(api, message)
-        if (message.channelReceiver != modlog) {
+        if (message.channelReceiver != modlog && "conduit" !in message.content) {
             if("<:autorip:277120850975653900>" !in message.content)
                 modlog.sendMessage("Message by ${message.author.name} deleted: \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")
             else
@@ -24,9 +24,8 @@ object ModuleModlog : IModule {
     }
 
     override fun onMessageEdited(api: DiscordAPI, message: Message, old: String): Boolean {
-        
         val modlog = message.channelReceiver.server.channels.firstOrNull { it.name == "modlog" } ?: return super.onMessageDeleted(api, message)
-        if (message.channelReceiver != modlog)
+        if (message.channelReceiver != modlog && message !in ModulePoll.polls.map { it.message })
             modlog.sendMessage("Message by ${message.author.name} edited: \"${handle(old)}\" -> \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")
         return super.onMessageEdited(api, message, old)
     }
