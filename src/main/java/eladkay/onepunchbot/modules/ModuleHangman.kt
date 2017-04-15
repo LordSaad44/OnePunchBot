@@ -12,7 +12,8 @@ import eladkay.onepunchbot.LargeStringHolder
 object ModuleHangman : IModule {
     class Hangman(val word: String, var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN, val guessed: MutableList<Char> = mutableListOf(' ')) {
         fun advance(): Boolean {
-            if(stage == EnumHangmanStage.RIGHT_LEG) return false
+            if(stage == EnumHangmanStage.RIGHT_LEG)
+                return false
             else stage = EnumHangmanStage.values()[stage.ordinal + 1]
             return true
         }
@@ -26,7 +27,13 @@ object ModuleHangman : IModule {
             CONTINUE, LOSS, WIN
         }
         fun addChar(char: Char): EnumResult {
-            if(char !in word) if(advance()) return EnumResult.CONTINUE else EnumResult.LOSS
+            if(char !in word) {
+                if (advance())
+                    return EnumResult.CONTINUE
+                else
+                    return EnumResult.LOSS
+            }
+
             guessed.add(char)
             if(getWordWithUnderscores() == word) return EnumResult.WIN
             return EnumResult.CONTINUE
