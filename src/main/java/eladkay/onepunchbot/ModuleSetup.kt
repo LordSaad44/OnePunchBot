@@ -50,6 +50,12 @@ object ModuleSetup : IModule {
                 reply("Done. Update this role's permissions to \"Administrator\" and apply it to your server admins.")
             } else adminRole = server.roles.first { it.name == "Admins" }
             Thread.sleep(5000)
+            if(!server.roles.any { it.name == "Moderators" }) {
+                reply("Creating Moderators role...")
+                doTryCatched { server.createRole().get().apply { updateName("Moderators") } }
+                reply("Done. Update this role's permissions to whatever permissions your server moderators need and apply it to them.")
+            }
+            Thread.sleep(5000)
             if(!server.channels.any { it.name == "admin-only" }) {
                 reply("Creating admin-only channel...")
                 doTryCatched {

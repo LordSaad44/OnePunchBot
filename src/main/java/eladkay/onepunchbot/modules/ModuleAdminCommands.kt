@@ -14,7 +14,7 @@ object ModuleAdminCommands : IModule {
             for (player in message.channelReceiver.server.members) {
                 if (!player.getRoles(message.channelReceiver.server).contains(rank)) {
                     rank?.addUser(player)
-                    Thread.sleep(1000)
+                    Thread.sleep(2000)
                     message.reply("Gave $player rank $rank")
                 }
             }
