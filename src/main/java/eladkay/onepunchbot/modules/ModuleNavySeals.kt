@@ -19,6 +19,8 @@ object ModuleNavySeals : IModule {
                 message.reply(LargeStringHolder.NAVY_SEAL_LATIN)
             else if("🤗" in message.content)
                 message.reply(LargeStringHolder.NAVY_SEAL_FRIENDLINESS)
+            else if("<:aquaThumbup:280707294495244288>" in message.content)
+                message.reply(LargeStringHolder.NAVY_SEAL_VAZKII)
             else message.reply(LargeStringHolder.NAVY_SEAL)
         return super.onMessage(api, message)
     }

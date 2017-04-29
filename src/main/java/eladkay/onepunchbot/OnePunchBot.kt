@@ -19,12 +19,16 @@ object Holder {
     val adminChannels = mutableMapOf<String, Channel?>()
 }
 
+
+fun Server.getOrCreateRole(name: String): Role {
+    return roles.firstOrNull { it.name == name } ?: createRole().get().apply { updateName(name) }
+}
 /**
  * Created by Elad on 2/3/2017.
  */
 fun main(args: Array<String>) {
     val modules = listOf<IModule>(
-            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup, ModulePoll, ModuleConduit, ModuleJava, ModuleHangman
+            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup, ModulePoll, ModuleConduit, ModuleJava, ModuleHangman, ModuleTTT, ModuleVoiceChat
             //,ModuleDebug
     )
     val api0 = Javacord.getApi(token, true)

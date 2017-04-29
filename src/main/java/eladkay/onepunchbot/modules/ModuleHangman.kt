@@ -5,6 +5,7 @@ import de.btobastian.javacord.entities.Channel
 import de.btobastian.javacord.entities.message.Message
 import eladkay.onepunchbot.IModule
 import eladkay.onepunchbot.LargeStringHolder
+import java.util.*
 
 /**
  * Created by Elad on 4/15/2017.
@@ -43,6 +44,7 @@ object ModuleHangman : IModule {
         }
     }
     val hangman = mutableMapOf<Channel, Hangman>()
+    val q = mutableMapOf<Channel, Queue<Hangman>>()
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if (message.userReceiver != null && message.content.startsWith("!hangman ")) {
             val args = message.content.split(" ")
@@ -51,13 +53,26 @@ object ModuleHangman : IModule {
             } else {
                 val id = args[1]
                 val word = args.subList(2, args.size).joinToString(" ")
+                if("@" in word) {
+                    message.reply("Haha no")
+                    return super.onMessage(api, message)
+                }
                 val server = id.split("@")[1]
                 val channel = id.split("@")[0]
                 val channelobj = api.getServerById(server).getChannelById(channel)
-                hangman.put(channelobj, Hangman(word.toLowerCase()))
-                message.reply("$word hangman is now running on $channelobj")
-                channelobj.sendMessage("${message.author.name} has started a game of Hangman!")
-                channelobj.sendMessage(hangman[channelobj].toString())
+                if(hangman[channelobj] == null) {
+                    hangman.put(channelobj, Hangman(word.toLowerCase()))
+                    message.reply("$word hangman is now running on $channelobj")
+                    channelobj.sendMessage("${message.author.name} has started a game of Hangman!")
+                    channelobj.sendMessage(hangman[channelobj].toString())
+                } else {
+                    val queue = q.getOrPut(channelobj) {
+                        ArrayDeque()
+                    }
+                    val position = queue.size + 1
+                    queue.add(Hangman(word.toLowerCase()))
+                    message.reply("$word hangman is now queued on $channelobj. Position on queue: $position")
+                }
             }
 
         } else if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!hangman ")) {
@@ -71,11 +86,28 @@ object ModuleHangman : IModule {
                         message.reply(LargeStringHolder.LOSS)
                         message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
                         hangman.remove(message.channelReceiver)
+                        if(q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
+                            val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
+                            val channelobj = message.channelReceiver
+                            hangman.put(channelobj, hangmanObj)
+                            channelobj.sendMessage("A new game of hangman has been started!")
+                            Thread.sleep(500)
+                            channelobj.sendMessage(hangmanObj.toString())
+                        }
+
                     }
                     ModuleHangman.Hangman.EnumResult.WIN -> {
                         message.reply(LargeStringHolder.CORRECT)
                         message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
                         hangman.remove(message.channelReceiver)
+                        if(q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
+                            val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
+                            val channelobj = message.channelReceiver
+                            hangman.put(channelobj, hangmanObj)
+                            channelobj.sendMessage("A new game of hangman has been started!")
+                            Thread.sleep(500)
+                            channelobj.sendMessage(hangmanObj.toString())
+                        }
                     }
                     ModuleHangman.Hangman.EnumResult.CONTINUE -> {
                         //noop
@@ -88,6 +120,14 @@ object ModuleHangman : IModule {
                 message.reply(LargeStringHolder.CORRECT)
                 message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
                 hangman.remove(message.channelReceiver)
+                if(q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
+                    val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
+                    val channelobj = message.channelReceiver
+                    hangman.put(channelobj, hangmanObj)
+                    channelobj.sendMessage("A new game of hangman has been started!")
+                    Thread.sleep(500)
+                    channelobj.sendMessage(hangmanObj.toString())
+                }
             } else {
                 message.reply("Nope.")
             }

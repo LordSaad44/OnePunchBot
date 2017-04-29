@@ -17,7 +17,7 @@ object ModulePoll : IModule {
         api.registerListener(ReactionAddListener {
             api, reaction, user ->
             if(!polls.any { it.id.toString() in reaction.message.content }) {
-                println(reaction.message.content)
+                //println(reaction.message.content)
                 return@ReactionAddListener
             }
             if((reaction.isCustomEmoji && reaction.customEmoji.name.contains("thumbsup")) || (reaction.isUnicodeEmoji && reaction.unicodeEmoji.contains("👍"))) {
@@ -28,13 +28,13 @@ object ModulePoll : IModule {
                 var uuid = 0.toLong()
                 val poll = polls.first { it.id.toString() in reaction.message.content }.apply { votes--; uuid = id }
                 reaction.message.edit("(id: $uuid) Poll (vote with 👍 and 👎 reactions): ${poll.orig}? Votes: ${poll.votes}")
-            } else println(reaction.unicodeEmoji)
+            } //else println(reaction.unicodeEmoji)
         })
         api.registerListener(ReactionRemoveListener {
             api, reaction, user ->
             if(!polls.any { it.id.toString() in reaction.message.content }) {
                 println(reaction.message.content)
-                return@ReactionRemoveListener
+                //return@ReactionRemoveListener
             }
 
             if((reaction.isCustomEmoji && reaction.customEmoji.name.contains("thumbsup")) || (reaction.isUnicodeEmoji && reaction.unicodeEmoji.contains("👍"))) {
