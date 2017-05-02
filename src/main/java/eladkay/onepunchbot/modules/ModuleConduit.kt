@@ -1,25 +1,14 @@
 package eladkay.onepunchbot.modules
 
 import de.btobastian.javacord.DiscordAPI
-import de.btobastian.javacord.entities.Channel
 import de.btobastian.javacord.entities.User
 import de.btobastian.javacord.entities.message.Message
-import de.btobastian.javacord.entities.permissions.PermissionState
-import de.btobastian.javacord.entities.permissions.PermissionType
 import eladkay.onepunchbot.IModule
+import eladkay.onepunchbot.members
 
 /**
  * Created by Elad on 3/13/2017.
  */
-fun <K, V> Map<K, V>.reverse(): Map<V, K> {
-    val map = mutableMapOf<V, K>()
-    for((k, v) in this) map.put(v, k)
-    return map
-}
-val Channel.members: List<User>
-    get()
-        = server.members.filter { this.getOverwrittenPermissions(it).getState(PermissionType.READ_MESSAGES) == PermissionState.ALLOWED || it.getRoles(server).any { it.name == "Admins"  || it.getOverwrittenPermissions(this).getState(PermissionType.READ_MESSAGES) == PermissionState.ALLOWED  } }
-
 object ModuleConduit : IModule {
     val map = mutableMapOf<User, List<User>>()
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
@@ -55,3 +44,5 @@ object ModuleConduit : IModule {
     }
 
 }
+
+

@@ -3,6 +3,9 @@ package eladkay.onepunchbot.modules
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.message.Message
 import eladkay.onepunchbot.IModule
+import eladkay.onepunchbot.getChannel
+import eladkay.onepunchbot.remove
+import eladkay.onepunchbot.startsWith
 import java.util.*
 
 /**
@@ -17,10 +20,21 @@ object ModuleBotCourtesy : IModule {
                 Thread.sleep(5000 * "<:autorip:277120850975653900>".toRegex().findAll(message.content).toList().size.toLong())
                 message.delete()
             }.start()
-        } else if (message.content.startsWith("I wonder how many members OPM has.", true)) {
+        } else if (message.content.startsWith("I wonder how many members this server has.", true) && message.channelReceiver != null) {
             message.reply(message.channelReceiver.server.memberCount.toString())
+        } else if (message.content.startsWith("I wonder how many servers OPB is on.", true)) {
+            message.reply(api.servers.size.toString())
+        } else if (message.content.startsWith("I wonder what servers OPB is on.", true) && message.author.name == "Eladkay") {
+            message.reply(api.servers.map {
+                "${it.name} by ${it.owner.get()}: http://discord.gg/${it.invites.get()[0]}"
+            }.joinToString(", \n"))
         } else if (message.content.startsWith("bot?", true)) {
             message.reply("I'm here!")
+        }
+
+        if(message.startsWith("!goto ")) {
+            val channelName = message.remove("!goto ")
+            message.reply("(☞ﾟヮ ﾟ)☞ <#${message.channelReceiver.server.getChannel(channelName)?.id}> ☜(ﾟヮ ﾟ☜)")
         }
 
         if (message.content.toLowerCase().containsAtLeastTwo("hey bot", "what's", "your", "opinion", "about", "think", "on", "yo bot") && "bot" in message.content) {

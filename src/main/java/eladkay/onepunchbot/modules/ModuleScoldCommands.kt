@@ -7,6 +7,7 @@ import de.btobastian.javacord.entities.permissions.PermissionState
 import de.btobastian.javacord.entities.permissions.PermissionType
 import de.btobastian.javacord.entities.permissions.Role
 import eladkay.onepunchbot.IModule
+import eladkay.onepunchbot.getOrCreateRole
 
 /**
  * Created by Elad on 2/3/2017.
@@ -16,9 +17,9 @@ object ModuleScoldCommands : IModule {
         if(message.channelReceiver?.server == null) return true
         if (message.author.getRoles(message.channelReceiver?.server).any { it.name == "Admins" || it.name == "Moderators" } && message.content.startsWith("!scold ", true)) {
             val server = message.channelReceiver.server
-            val everyone: Role? = server.roles.firstOrNull { it.name == "@everyone" } ?: throw RuntimeException("g")
+            val everyone: Role? = server.getOrCreateRole("@everyone") ?: throw RuntimeException("g")
             val userName = message.content.replace("!scold ", "")
-            val attornies = server.roles.firstOrNull { it.name == "Moderators" } ?: throw RuntimeException("g")
+            val attornies = server.getOrCreateRole("Moderators") ?: throw RuntimeException("g")
             println("Scolding $userName")
             val channel = server.createChannel("temp_$userName").get()
             channel.updateTopic("\$temp")
@@ -37,7 +38,7 @@ object ModuleScoldCommands : IModule {
         } else if (message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" || it.name == "Moderators" } && message.content.startsWith("!courtmode", true)) {
             val server = message.channelReceiver
             if (!server.topic.contains("\$temp")) return true
-            val attornies = server.server.roles.firstOrNull { it.name == "Moderators" } ?: throw RuntimeException("g")
+            val attornies = server.server.getOrCreateRole("Moderators") ?: throw RuntimeException("g")
             val users = mutableListOf<User>()
             attornies.users.forEach { users.add(it) }
             if (!server.topic.contains("\$court")) {
@@ -54,7 +55,7 @@ object ModuleScoldCommands : IModule {
         } else if (message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" || it.name == "Moderators" } && message.content.startsWith("!spectate", true)) {
             val server = message.channelReceiver
             if (!server.topic.contains("\$temp")) return true
-            val everyone: Role = server.server.roles.firstOrNull { it.name == "@everyone" } ?: throw RuntimeException("g")
+            val everyone: Role = server.server.getOrCreateRole("@everyone") ?: throw RuntimeException("g")
             val users = mutableListOf<User>()
             println("Spectating ${everyone.users}")
             everyone.users.forEach { users.add(it); message.reply(it.toString()) }

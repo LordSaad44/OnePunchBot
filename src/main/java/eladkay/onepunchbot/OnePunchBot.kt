@@ -1,5 +1,6 @@
 package eladkay.onepunchbot
 
+import com.google.common.reflect.ClassPath
 import com.google.common.util.concurrent.FutureCallback
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.Javacord
@@ -7,30 +8,72 @@ import de.btobastian.javacord.entities.Channel
 import de.btobastian.javacord.entities.Server
 import de.btobastian.javacord.entities.User
 import de.btobastian.javacord.entities.message.Message
+import de.btobastian.javacord.entities.permissions.PermissionState
+import de.btobastian.javacord.entities.permissions.PermissionType
 import de.btobastian.javacord.entities.permissions.Role
 import de.btobastian.javacord.listener.message.MessageCreateListener
 import de.btobastian.javacord.listener.message.MessageDeleteListener
-import eladkay.onepunchbot.modules.*
+import eladkay.onepunchbot.Holder.opm
+import eladkay.onepunchbot.Holder.opmAdmins
 
 
 val token = tokenHeld
 
 object Holder {
     val adminChannels = mutableMapOf<String, Channel?>()
+    lateinit var opm: Server
+    val opmAdmins by lazy {
+        opm.members.filter {
+            it.getRoles(opm).any { it.name == "Admins" }
+        }
+    }
 }
-
+val Channel.members: List<User>
+    get()
+         = server.members.filter { this.getOverwrittenPermissions(it).getState(PermissionType.READ_MESSAGES) == PermissionState.ALLOWED || it.getRoles(server).any { it.name == "Admins"  || it.getOverwrittenPermissions(this).getState(PermissionType.READ_MESSAGES) == PermissionState.ALLOWED  } }
 
 fun Server.getOrCreateRole(name: String): Role {
     return roles.firstOrNull { it.name == name } ?: createRole().get().apply { updateName(name) }
+}
+fun Server.getOrCreateChannel(name: String): Channel {
+    return channels.firstOrNull { it.name == name } ?: createChannel(name).get()
+}
+fun Server.getChannel(name: String): Channel? {
+    return channels.firstOrNull { it.name == name }
+}
+fun Message.startsWith(string: String) = content.startsWith(string, ignoreCase = true)
+fun Message.remove(string: String) = content.replace(string, "")
+fun slow(lambda: ()->Unit) {
+    lambda()
+    Thread.sleep(100)
+}
+fun tryCatch(server: Server, lambda: () -> Unit) {
+    try {
+        lambda()
+    } catch(e: Throwable) {
+        Holder.adminChannels[server.id]?.sendMessage(e.toString())
+    }
+}
+fun tryCatch(message: String, lambda: () -> Unit) {
+    try {
+        lambda()
+    } catch(e: Throwable) {
+        println("$message: $e")
+    }
 }
 /**
  * Created by Elad on 2/3/2017.
  */
 fun main(args: Array<String>) {
-    val modules = listOf<IModule>(
-            ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup, ModulePoll, ModuleConduit, ModuleJava, ModuleHangman, ModuleTTT, ModuleVoiceChat
+    //val modules = mutableListOf<IModule>(
+            //ModuleModlog, ModuleShellReader, ModuleIgnore, ModuleShellHandler, ModuleBotCourtesy, ModuleAdminCommands, ModuleScoldCommands, ModuleAutoripper, ModuleBotChoose, ModuleMath, ModuleAviation, ModuleNerdiness, ModuleNavySeals, ModuleSetup, ModulePoll, ModuleConduit, ModuleJava, ModuleHangman, ModuleTTT, ModuleVoiceChat
             //,ModuleDebug
-    )
+    //)
+    val modules = ClassPath.from(Main::class.java.classLoader).getTopLevelClassesRecursive("eladkay.onepunchbot.modules").map {
+        var a: IModule? = null
+        tryCatch(it.name) { a = it.load().getDeclaredField("INSTANCE").get(null) as? IModule }
+        a
+    }.filterNotNull()
     val api0 = Javacord.getApi(token, true)
     //api0.game = "saad's mom"
     api0.setAutoReconnect(false)
@@ -41,7 +84,9 @@ fun main(args: Array<String>) {
             modules.forEach { it.onInit(api0) }
             api!!
             while (api0.servers.toMutableList().size == 0);
-            for(server in api.servers) Holder.adminChannels.put(server.id, server.channels.firstOrNull { it.name == "admin-only" })
+            for(server in api.servers) Holder.adminChannels.put(server.id, server.getOrCreateChannel("admin-only"))
+            opm = api.getServerById("212123426356199425")
+            println(opmAdmins)
             api.registerListener(MessageDeleteListener {
                 api, message ->
                 try {
@@ -199,4 +244,23 @@ interface IModule {
     fun onInitFailure(api: DiscordAPI) {
 
     }
+}
+
+abstract class CommandBase : IModule {
+    abstract val paramCount: Int // -1 for vararg
+    abstract val command: String
+    companion object {
+        const val commandChar = '!'
+    }
+
+    override fun processMessageOrEdit(message: Message) {
+        if(message.startsWith("$commandChar$command${if (paramCount <= 0) "" else " "}")) {
+            val args = message.remove("$commandChar$command${if (paramCount <= 0) "" else " "}")
+            val split = args.split(" ")
+            if(paramCount == split.size || paramCount == -1) processCommand(message, split.toTypedArray())
+        }
+        super.processMessageOrEdit(message)
+    }
+
+    abstract fun processCommand(message: Message, args: Array<String>)
 }

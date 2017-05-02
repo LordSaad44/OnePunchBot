@@ -8,6 +8,6 @@ import eladkay.onepunchbot.IModule
  */
 object ModuleDebug : IModule {
     override fun processMessageOrEdit(message: Message) {
-        println(message.content)
+        //println(message.content)
     }
 }

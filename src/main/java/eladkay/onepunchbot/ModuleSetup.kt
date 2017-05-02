@@ -48,7 +48,7 @@ object ModuleSetup : IModule {
                 reply("Creating Admins role...")
                 doTryCatched { server.createRole().get().apply { updateName("Admins") }.apply { adminRole = this } }
                 reply("Done. Update this role's permissions to \"Administrator\" and apply it to your server admins.")
-            } else adminRole = server.roles.first { it.name == "Admins" }
+            } else adminRole = server.getOrCreateRole("Admins")
             Thread.sleep(5000)
             if(!server.roles.any { it.name == "Moderators" }) {
                 reply("Creating Moderators role...")
@@ -67,7 +67,7 @@ object ModuleSetup : IModule {
                 doTryCatched {
                     val permissionsAllowed = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.ALLOWED).build()
                     val permissionsDenied = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.DENIED).build()
-                    val everyone: Role = server.roles.firstOrNull { it.name == "@everyone" } ?: throw RuntimeException("No everyone role?")
+                    val everyone: Role = server.getOrCreateRole("@everyone") ?: throw RuntimeException("No everyone role?")
                     server.createChannel("admin-only").get().apply { updateOverwrittenPermissions(adminRole!!, permissionsAllowed) }.apply { updateOverwrittenPermissions(everyone, permissionsDenied) }.apply { Holder.adminChannels.put(server.id, this) }
                 }
                 reply("Done.")
@@ -78,7 +78,7 @@ object ModuleSetup : IModule {
                 doTryCatched {
                     val permissionsAllowed = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.ALLOWED).build()
                     val permissionsDenied = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.DENIED).build()
-                    val everyone: Role = server.roles.firstOrNull { it.name == "@everyone" } ?: throw RuntimeException("No everyone role?")
+                    val everyone: Role = server.getOrCreateRole("@everyone") ?: throw RuntimeException("No everyone role?")
                     server.createChannel("modlog").get().apply { updateOverwrittenPermissions(adminRole!!, permissionsAllowed) }.apply { updateOverwrittenPermissions(everyone, permissionsDenied) }
                 }
                 reply("Done.")
@@ -89,7 +89,7 @@ object ModuleSetup : IModule {
                 doTryCatched {
                     val permissionsAllowed = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.ALLOWED).build()
                     val permissionsDenied = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.DENIED).build()
-                    val everyone: Role = server.roles.firstOrNull { it.name == "@everyone" } ?: throw RuntimeException("No everyone role?")
+                    val everyone: Role = server.getOrCreateRole("@everyone") ?: throw RuntimeException("No everyone role?")
                     server.createChannel("shell").get().apply { updateOverwrittenPermissions(adminRole!!, permissionsAllowed) }.apply { updateOverwrittenPermissions(everyone, permissionsDenied) }
                 }
                 reply("Done.")
@@ -114,20 +114,20 @@ object ModuleSetup : IModule {
             Thread.sleep(5000)
             reply("Deleting #modlog...")
             doTryCatched {
-                server.channels.first { it.name == "modlog" }.delete()
+                server.getOrCreateChannel("modlog").delete()
             }
             reply("Done.")
             Thread.sleep(5000)
             reply("Deleting #admin-only...")
             doTryCatched {
-                server.channels.first { it.name == "admin-only" }.delete()
+                server.getOrCreateChannel("admin-only").delete()
                 Holder.adminChannels.remove(server.id)
             }
             reply("Done.")
             Thread.sleep(5000)
             reply("Deleting Admins...")
             doTryCatched {
-                server.roles.first { it.name == "Admins" }.delete()
+                server.getOrCreateRole("Admins").delete()
             }
             reply("Done.")
             Thread.sleep(5000)
