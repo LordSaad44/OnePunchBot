@@ -16,10 +16,10 @@ object ModuleModlog : IModule {
     override fun onMessageDeleted(api: DiscordAPI, message: Message): Boolean {
         val modlog = message.channelReceiver.server.getOrCreateChannel("modlog") ?: return super.onMessageDeleted(api, message)
         if (message.channelReceiver != modlog && "conduit" !in message.content) {
-            if("<:autorip:277120850975653900>" !in message.content)
+            if(":autorip:" !in message.content)
                 modlog.sendMessage("Message by ${message.author.name} deleted: \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")
             else
-                modlog.sendMessage("Self destructing message by ${message.author.name} timed out: \"${handle(message.content)}\" in channel #${message.channelReceiver.name} after ${(5000 * "<:autorip:277120850975653900>".toRegex().findAll(message.content).toList().size.toLong())/1000} seconds")
+                modlog.sendMessage("Self destructing message by ${message.author.name} timed out: \"${handle(message.content)}\" in channel #${message.channelReceiver.name} after ${(5000 * ":autorip:".toRegex().findAll(message.content).toList().size.toLong())/1000} seconds")
         }
         return super.onMessageDeleted(api, message)
     }

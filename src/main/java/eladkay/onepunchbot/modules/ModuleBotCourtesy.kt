@@ -15,9 +15,9 @@ object ModuleBotCourtesy : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if (message.content.startsWith("Hey, thanks, bot.", true)) {
             message.reply("You're welcome ;)")
-        } else if (message.content.contains("<:autorip:277120850975653900>", true) && message.channelReceiver.name != "modlog") {
+        } else if (message.content.contains(":autorip:", true) && message.channelReceiver.name != "modlog") {
             Thread {
-                Thread.sleep(5000 * "<:autorip:277120850975653900>".toRegex().findAll(message.content).toList().size.toLong())
+                Thread.sleep(5000 * ":autorip:".toRegex().findAll(message.content).toList().size.toLong())
                 message.delete()
             }.start()
         } else if (message.content.startsWith("I wonder how many members this server has.", true) && message.channelReceiver != null) {
@@ -57,10 +57,10 @@ object ModuleBotCourtesy : IModule {
 
         val seed = string.intern().hashCode().toLong();
         val negativeMemes = listOf<String>("octuple", "enderium", "trump", "nazi", "java", "hitler", "occ")
-        val elucent = listOf<String>(/*"elucent", "roots", "elu", "embers", "goetia"*/)
+        val elucent = listOf<String>("elucent", "roots", "elu", "embers", "goetia")
         val math = listOf("math")
         if (elucent.any { it in string }) {
-            val quotes = listOf("wtf is that?", "dunno what it is but sounds shitty", "sounds broken, explain")
+            val quotes = listOf("wtf is that?", "never heard of it", "i must have missed what you said")
             val quote = quotes[Random(seed).nextInt(quotes.size)]
             return quote
         } else if (negativeMemes.any { it in string }) {
@@ -74,7 +74,7 @@ object ModuleBotCourtesy : IModule {
         } else {
             val quotes = listOf<String>("donaldtrumpmemes", "$pronounBe more unbalanced than DE", "$pronounBe a literal dumpster fire", "$pronoun run${if(presSim) "s" else ""} better than you do", "$pronounBe gonna be yuge!", "$pronounBe only good if ${pronounBe.toLowerCase()} written in Kotlin", "Turn those lights off!"/*, "/giphy $string"*/)
             val quote = quotes[Random(seed).nextInt(quotes.size)]
-            val trumpMemes = listOf<String>("Like Donald Trump always said, 'If you need Viagra you're probably with the wrong girl'", "Like Donald Trump always said, 'I don't like losers'")
+            val trumpMemes = listOf<String>("Like Donald Trump always said, 'As long as you're thinking anyway, think big.' You didn't.", "Like Donald Trump always said, 'I don't like losers'")
             return if (quote == "donaldtrumpmemes") trumpMemes[Random(seed).nextInt(trumpMemes.size)]
             else quote
 
