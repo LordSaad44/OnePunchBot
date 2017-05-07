@@ -13,6 +13,7 @@
     </properties>
 
     <repositories>
+
         <repository>
             <id>javacord-repo</id>
             <url>http://testrepo.bastian-oppermann.de</url>
@@ -101,16 +102,16 @@
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
+            <artifactId>httpclient</artifactId>
             <scope>compile</scope>
-            <version>4.4.5</version>
+            <version>4.5.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcomponents-client</artifactId>
+            <artifactId>httpcore</artifactId>
             <scope>compile</scope>
-            <version>4.5.2</version>
+            <version>4.4.5</version>
         </dependency>
 
         <dependency>
