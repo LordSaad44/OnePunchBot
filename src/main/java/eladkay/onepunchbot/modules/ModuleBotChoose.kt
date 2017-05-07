@@ -10,7 +10,7 @@ import java.util.*
  */
 object ModuleBotChoose : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
-        if("hey bot, choose " in message.content.toLowerCase()) {
+        if ("hey bot, choose " in message.content.toLowerCase()) {
             val msg = message.content.replace("hey bot, choose", "", ignoreCase = true).replace("between ", "", true)
             val content = "(-?(?:\\d+|\\d*\\.\\d+))\\.\\.(-?(?:\\d+|\\d*\\.\\d+))".toRegex().replace(msg) {
                 val n1 = it.groups[1]!!.value.toDouble().toInt()

@@ -32,30 +32,31 @@ object ModuleBotCourtesy : IModule {
             message.reply("I'm here!")
         }
 
-        if(message.startsWith("!goto ")) {
+        if (message.startsWith("!goto ")) {
             val channelName = message.remove("!goto ")
             message.reply("(☞ﾟヮ ﾟ)☞ <#${message.channelReceiver.server.getChannel(channelName)?.id}> ☜(ﾟヮ ﾟ☜)")
         }
 
         if (message.content.toLowerCase().containsAtLeastTwo("hey bot", "what's", "your", "opinion", "about", "think", "on", "yo bot") && "bot" in message.content) {
-            if(message.mentions.size == 1)
-                if(message.mentions.any { "tris" in it.name || "kitten" in it.name || "luna" in it.name })
+            if (message.mentions.size == 1)
+                if (message.mentions.any { "tris" in it.name || "kitten" in it.name || "luna" in it.name })
                     message.reply(selectMeme(message.content.toLowerCase(), "She", "She's"))
-                else if(message.mentions.any { it.name == message.author.name }) message.reply(selectMeme(message.content.toLowerCase(), "You", "You're", false))
+                else if (message.mentions.any { it.name == message.author.name }) message.reply(selectMeme(message.content.toLowerCase(), "You", "You're", false))
                 else message.reply(selectMeme(message.content.toLowerCase(), "He", "He's"))
-            else if(message.mentions.size > 1 || message.content.replace("?", "").endsWith("s"))
+            else if (message.mentions.size > 1 || message.content.replace("?", "").endsWith("s"))
                 message.reply(selectMeme(message.content.toLowerCase(), "They", "They're", false))
-            else if("me" in message.content || message.mentions.any { it.name == message.author.name })
+            else if ("me" in message.content || message.mentions.any { it.name == message.author.name })
                 message.reply(selectMeme(message.content.toLowerCase(), "You", "You're", false))
             else message.reply(selectMeme(message.content.toLowerCase()))
         }
 
         return super.onMessage(api, message)
     }
+
     var x = 0
     fun selectMeme(string: String, pronoun: String = "It", pronounBe: String = "It's", presSim: Boolean = true): String {
 
-        val seed = string.intern().hashCode().toLong();
+        val seed = string.intern().hashCode().toLong()
         val negativeMemes = listOf<String>("octuple", "enderium", "trump", "nazi", "java", "hitler", "occ")
         val elucent = listOf<String>("elucent", "roots", "elu", "embers", "goetia")
         val math = listOf("math")
@@ -68,11 +69,11 @@ object ModuleBotCourtesy : IModule {
             val quote = quotes[Random(seed).nextInt(quotes.size)]
             return quote
         } else if (math.any { it in string }) {
-            val quotes = listOf("+x+++++x = ${+x+++ ++x}")
+            val quotes = listOf("+x+++++x = ${+x++ + ++x}")
             val quote = quotes[Random(seed).nextInt(quotes.size)]
             return quote
         } else {
-            val quotes = listOf<String>("donaldtrumpmemes", "$pronounBe more unbalanced than DE", "$pronounBe a literal dumpster fire", "$pronoun run${if(presSim) "s" else ""} better than you do", "$pronounBe gonna be yuge!", "$pronounBe only good if ${pronounBe.toLowerCase()} written in Kotlin", "Turn those lights off!"/*, "/giphy $string"*/)
+            val quotes = listOf<String>("donaldtrumpmemes", "$pronounBe more unbalanced than DE", "$pronounBe a literal dumpster fire", "$pronoun run${if (presSim) "s" else ""} better than you do", "$pronounBe gonna be yuge!", "$pronounBe only good if ${pronounBe.toLowerCase()} written in Kotlin", "Turn those lights off!"/*, "/giphy $string"*/)
             val quote = quotes[Random(seed).nextInt(quotes.size)]
             val trumpMemes = listOf<String>("Like Donald Trump always said, 'As long as you're thinking anyway, think big.' You didn't.", "Like Donald Trump always said, 'I don't like losers'")
             return if (quote == "donaldtrumpmemes") trumpMemes[Random(seed).nextInt(trumpMemes.size)]
@@ -81,6 +82,7 @@ object ModuleBotCourtesy : IModule {
         }
 
     }
+
     fun String.containsAtLeastTwo(vararg string: String) = string.count { it in this } > 2
 
 }

@@ -14,12 +14,12 @@ import eladkay.onepunchbot.getOrCreateRole
  */
 object ModuleScoldCommands : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
-        if(message.channelReceiver?.server == null) return true
+        if (message.channelReceiver?.server == null) return true
         if (message.author.getRoles(message.channelReceiver?.server).any { it.name == "Admins" || it.name == "Moderators" } && message.content.startsWith("!scold ", true)) {
             val server = message.channelReceiver.server
-            val everyone: Role? = server.getOrCreateRole("@everyone") ?: throw RuntimeException("g")
+            val everyone: Role? = server.getOrCreateRole("@everyone")
             val userName = message.content.replace("!scold ", "")
-            val attornies = server.getOrCreateRole("Moderators") ?: throw RuntimeException("g")
+            val attornies = server.getOrCreateRole("Moderators")
             println("Scolding $userName")
             val channel = server.createChannel("temp_$userName").get()
             channel.updateTopic("\$temp")
@@ -38,7 +38,7 @@ object ModuleScoldCommands : IModule {
         } else if (message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" || it.name == "Moderators" } && message.content.startsWith("!courtmode", true)) {
             val server = message.channelReceiver
             if (!server.topic.contains("\$temp")) return true
-            val attornies = server.server.getOrCreateRole("Moderators") ?: throw RuntimeException("g")
+            val attornies = server.server.getOrCreateRole("Moderators")
             val users = mutableListOf<User>()
             attornies.users.forEach { users.add(it) }
             if (!server.topic.contains("\$court")) {
@@ -55,7 +55,7 @@ object ModuleScoldCommands : IModule {
         } else if (message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" || it.name == "Moderators" } && message.content.startsWith("!spectate", true)) {
             val server = message.channelReceiver
             if (!server.topic.contains("\$temp")) return true
-            val everyone: Role = server.server.getOrCreateRole("@everyone") ?: throw RuntimeException("g")
+            val everyone: Role = server.server.getOrCreateRole("@everyone")
             val users = mutableListOf<User>()
             println("Spectating ${everyone.users}")
             everyone.users.forEach { users.add(it); message.reply(it.toString()) }

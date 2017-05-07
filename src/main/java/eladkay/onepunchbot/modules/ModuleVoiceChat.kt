@@ -18,7 +18,7 @@ object ModuleVoiceChat : IModule {
         api.registerListener(UserLeaveVoiceChannelListener {
             api, user ->
             api.servers.forEach {
-                if(it.roles.any { it.name == "Voice Chat"})
+                if (it.roles.any { it.name == "Voice Chat" })
                     it.roles.first { it.name == "Voice Chat" }.removeUser(user)
             }
 

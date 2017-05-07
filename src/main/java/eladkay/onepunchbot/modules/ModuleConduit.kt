@@ -12,19 +12,19 @@ import eladkay.onepunchbot.members
 object ModuleConduit : IModule {
     val map = mutableMapOf<User, List<User>>()
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
-        if(message.channelReceiver?.server != null && message.content.startsWith("!startconduit") && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {
+        if (message.channelReceiver?.server != null && message.content.startsWith("!startconduit") && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {
             val channel = message.channelReceiver
             val user = message.author
             user.sendMessage("Conduit established.")
             val members = channel.members.toList().filter { it != user }
             map.put(user, members)
             message.delete()
-        } else if(message.userReceiver != null && message.content.startsWith("!endconduit")) {
+        } else if (message.userReceiver != null && message.content.startsWith("!endconduit")) {
             val user = message.author
             user.sendMessage("Conduit closed.")
             map.remove(user)
             message.delete()
-        } else if(message.channelReceiver?.server != null && message.content.startsWith("!excludesomeone ") && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {
+        } else if (message.channelReceiver?.server != null && message.content.startsWith("!excludesomeone ") && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {
             val user = message.author
             val channel = message.channelReceiver
             val filteree = message.content.replace("!excludesomeone ", "")
@@ -35,9 +35,9 @@ object ModuleConduit : IModule {
             message.delete()
         }
 
-        if(message.userReceiver != null && message.author in map.values.flatMap { it }) {
+        if (message.userReceiver != null && message.author in map.values.flatMap { it }) {
             map.entries.first { message.author in it.value }.key.sendMessage("Conduit (${message.author.name}): ${message.content}")
-        } else if(message.userReceiver != null && message.author in map.keys && "!exclude" !in message.content) {
+        } else if (message.userReceiver != null && message.author in map.keys && "!exclude" !in message.content) {
             map[message.author]!!.filter { it != message.author }.forEach { it.sendMessage("Conduit (${message.author.name}): ${message.content}") }
         }
         return super.onMessage(api, message)

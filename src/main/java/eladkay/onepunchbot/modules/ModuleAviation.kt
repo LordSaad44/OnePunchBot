@@ -10,8 +10,8 @@ import eladkay.onepunchbot.LargeStringHolder
  */
 object ModuleAviation : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
-        if(message.content.startsWith("!lawsofaviation"))
-            message.reply(LargeStringHolder.LAWS_OF_AVIATION);
+        if (message.content.startsWith("!lawsofaviation"))
+            message.reply(LargeStringHolder.LAWS_OF_AVIATION)
         return super.onMessage(api, message)
     }
 }
