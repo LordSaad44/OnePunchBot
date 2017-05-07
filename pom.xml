@@ -9,10 +9,11 @@
     <version>2.0-SNAPSHOT</version>
 
     <properties>
-        <kotlin.version>1.0.6</kotlin.version>
+        <kotlin.version>1.1.2-3</kotlin.version>
     </properties>
 
     <repositories>
+
         <repository>
             <id>javacord-repo</id>
             <url>http://testrepo.bastian-oppermann.de</url>
@@ -60,6 +61,14 @@
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -75,7 +84,7 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
+            <artifactId>kotlin-stdlib-jre8</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javassist/javassist -->
@@ -90,26 +99,26 @@
             <artifactId>EvalEx</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <scope>compile</scope>
+            <version>4.5.3</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <scope>compile</scope>
+            <version>4.4.5</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcomponents-client</artifactId>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.5</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
