@@ -37,15 +37,15 @@ object ModuleHangman : IModule {
         fun addChar(char: Char): EnumResult {
             if (!char.isLetter() || char.toLowerCase() in guessed) return EnumResult.CONTINUE
 
+            if (char.toLowerCase() !in guessed)
+                guessed.add(char.toLowerCase())
+
             if (char.toLowerCase() !in lowerWord) {
                 if (advance())
                     return EnumResult.CONTINUE
                 else
                     return EnumResult.LOSS
             }
-
-            if (char.toLowerCase() !in guessed)
-                guessed.add(char.toLowerCase())
             if (wordWithUnderscores == word) return EnumResult.WIN
             return EnumResult.CONTINUE
         }
