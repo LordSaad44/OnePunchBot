@@ -7,11 +7,13 @@ import de.btobastian.javacord.entities.permissions.PermissionState
 import de.btobastian.javacord.entities.permissions.PermissionType
 import de.btobastian.javacord.entities.permissions.Role
 import eladkay.onepunchbot.IModule
+import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 import eladkay.onepunchbot.getOrCreateRole
 
 /**
  * Created by Elad on 2/3/2017.
  */
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleScoldCommands : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if (message.channelReceiver?.server == null) return true

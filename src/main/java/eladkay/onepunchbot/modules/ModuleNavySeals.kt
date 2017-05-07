@@ -5,10 +5,12 @@ import de.btobastian.javacord.entities.message.Message
 import eladkay.onepunchbot.IModule
 import eladkay.onepunchbot.LargeStringHolder
 import eladkay.onepunchbot.NavySealery
+import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 
 /**
  * Created by Elad on 2/19/2017.
  */
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleNavySeals : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if("!navyseals" in message.content)

@@ -5,11 +5,13 @@ import de.btobastian.javacord.entities.message.Message
 import de.btobastian.javacord.listener.message.ReactionAddListener
 import de.btobastian.javacord.listener.message.ReactionRemoveListener
 import eladkay.onepunchbot.IModule
+import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 import java.util.*
 
 /**
  * Created by Elad on 3/4/2017.
  */
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModulePoll : IModule {
     class Poll(var votes: Int = 0, val message: Message, val orig: String, val id: Long)
 

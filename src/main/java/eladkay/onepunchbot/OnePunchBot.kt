@@ -1,3 +1,4 @@
+@file:WireDontTouchThisOrIllKillYouWhileYouSleep
 package eladkay.onepunchbot
 
 import com.google.common.reflect.ClassPath
@@ -189,6 +190,13 @@ fun main(args: Array<String>) {
 
     })
 }
+
+/**
+ * if wire touches classes annotated with this annotation he will automatically be :autoripped:
+ */
+@Target(AnnotationTarget.FILE, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class WireDontTouchThisOrIllKillYouWhileYouSleep
 
 interface IModule {
     fun processMessageOrEdit(message: Message) {

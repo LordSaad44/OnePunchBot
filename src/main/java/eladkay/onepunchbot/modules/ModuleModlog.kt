@@ -6,11 +6,13 @@ import de.btobastian.javacord.entities.User
 import de.btobastian.javacord.entities.message.Message
 import de.btobastian.javacord.entities.permissions.Role
 import eladkay.onepunchbot.IModule
+import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 import eladkay.onepunchbot.getOrCreateChannel
 
 /**
  * Created by Elad on 2/3/2017.
  */
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleModlog : IModule {
     val handle = { a: String -> a.replace("`", "'"); "`$a`" }
     override fun onMessageDeleted(api: DiscordAPI, message: Message): Boolean {

@@ -1,5 +1,6 @@
 package eladkay.onepunchbot;
 
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 public class LargeStringHolder {
     public static final String HANGMAN_1 =
             "\\_|\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\n";

@@ -22,6 +22,9 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Elad on 3/24/2017.
  */
+/**
+ * wire can touch this if he _really_ wants to
+ */
 object ModuleJava : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if (message.content.startsWith("!java ") && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {

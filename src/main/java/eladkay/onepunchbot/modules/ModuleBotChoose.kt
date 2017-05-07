@@ -3,11 +3,13 @@ package eladkay.onepunchbot.modules
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.message.Message
 import eladkay.onepunchbot.IModule
+import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 import java.util.*
 
 /**
  * Created by Elad on 2/6/2017.
  */
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleBotChoose : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if ("hey bot, choose " in message.content.toLowerCase()) {

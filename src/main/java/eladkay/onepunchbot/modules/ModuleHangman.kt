@@ -5,11 +5,13 @@ import de.btobastian.javacord.entities.Channel
 import de.btobastian.javacord.entities.message.Message
 import eladkay.onepunchbot.IModule
 import eladkay.onepunchbot.LargeStringHolder
+import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 import java.util.*
 
 /**
  * Created by Elad on 4/15/2017.
  */
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleHangman : IModule {
     class Hangman(val word: String, val creator: String, var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN, val guessed: MutableList<Char> = mutableListOf()) {
         private val lowerWord = word.toLowerCase()

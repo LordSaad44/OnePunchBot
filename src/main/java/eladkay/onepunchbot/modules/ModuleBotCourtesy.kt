@@ -9,6 +9,7 @@ import java.util.*
 /**
  * Created by Elad on 2/3/2017.
  */
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleBotCourtesy : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if (message.content.startsWith("Hey, thanks, bot.", true)) {

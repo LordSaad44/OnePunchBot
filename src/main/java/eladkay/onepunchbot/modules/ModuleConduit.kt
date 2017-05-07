@@ -4,11 +4,13 @@ import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.User
 import de.btobastian.javacord.entities.message.Message
 import eladkay.onepunchbot.IModule
+import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 import eladkay.onepunchbot.members
 
 /**
  * Created by Elad on 3/13/2017.
  */
+@WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleConduit : IModule {
     val map = mutableMapOf<User, List<User>>()
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
