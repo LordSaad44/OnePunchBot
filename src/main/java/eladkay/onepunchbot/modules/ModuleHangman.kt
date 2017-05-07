@@ -24,7 +24,7 @@ object ModuleHangman : IModule {
         fun getCharsFromWord() = mutableSetOf<Char>().apply { word.toCharArray().forEach { add(it) } }
         fun getWordWithUnderscores(): String {
             val builder = StringBuilder()
-            for (char in word) if (char.isLetter() && char.toLowerCase() in guessed) builder.append(char) else builder.append("_")
+            for (char in word) if (!char.isLetter() || char.toLowerCase() in guessed) builder.append(char) else builder.append("_")
             return builder.toString()
         }
 
