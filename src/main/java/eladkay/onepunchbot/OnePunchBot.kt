@@ -81,7 +81,7 @@ fun main(args: Array<String>) {
             api!!
 
             // Wait for discord to catch up
-            while (api0.servers.toMutableList().size == 0) Thread.sleep(100)
+            while (api0.servers.toMutableList().size == 0);
 
             for(server in api.servers) {
                 Holder.adminChannels.put(server.id, server.getOrCreateChannel("admin-only"))
