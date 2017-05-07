@@ -35,6 +35,8 @@ object ModuleHangman : IModule {
         }
 
         fun addChar(char: Char): EnumResult {
+            if (!char.isLetter()) return EnumResult.CONTINUE
+
             if (char.toLowerCase() !in lowerWord) {
                 if (advance())
                     return EnumResult.CONTINUE
@@ -64,7 +66,11 @@ object ModuleHangman : IModule {
                 val id = args[1]
                 val word = args.subList(2, args.size).joinToString(" ")
                 if ("@" in word) {
-                    message.reply("Haha no")
+                    message.reply("@ tags are not permitted for hangman words, because of possible abuse. Please try again.")
+                    return super.onMessage(api, message)
+                }
+                if (word.none { it.isLetter() }) {
+                    message.reply("Your hangman doesn't have any letters to guess! Please try again.")
                     return super.onMessage(api, message)
                 }
                 val server = id.split("@")[1]
@@ -90,40 +96,44 @@ object ModuleHangman : IModule {
                 message.reply("Invalid! use: !hangman <char>")
             } else {
                 val letter = message.content.replace("!hangman ", "")[0]
-                when (hangman[message.channelReceiver]!!.addChar(letter)) {
+                if (!letter.isLetter()) message.reply("That's not a letter!")
+                else {
+                    when (hangman[message.channelReceiver]!!.addChar(letter)) {
 
-                    ModuleHangman.Hangman.EnumResult.LOSS -> {
-                        message.reply(LargeStringHolder.LOSS)
-                        message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
-                        hangman.remove(message.channelReceiver)
-                        if (q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
-                            val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
-                            val channelobj = message.channelReceiver
-                            hangman.put(channelobj, hangmanObj)
-                            channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
-                            Thread.sleep(500)
-                            channelobj.sendMessage(hangmanObj.toString())
-                        }
+                        ModuleHangman.Hangman.EnumResult.LOSS -> {
+                            message.reply(LargeStringHolder.LOSS)
+                            message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
+                            hangman.remove(message.channelReceiver)
+                            if (q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
+                                val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
+                                val channelobj = message.channelReceiver
+                                hangman.put(channelobj, hangmanObj)
+                                channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
+                                Thread.sleep(500)
+                                channelobj.sendMessage(hangmanObj.toString())
+                            }
 
-                    }
-                    ModuleHangman.Hangman.EnumResult.WIN -> {
-                        message.reply(LargeStringHolder.CORRECT)
-                        message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
-                        hangman.remove(message.channelReceiver)
-                        if (q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
-                            val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
-                            val channelobj = message.channelReceiver
-                            hangman.put(channelobj, hangmanObj)
-                            channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
-                            Thread.sleep(500)
-                            channelobj.sendMessage(hangmanObj.toString())
+                        }
+                        ModuleHangman.Hangman.EnumResult.WIN -> {
+                            message.reply(LargeStringHolder.CORRECT)
+                            message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
+                            hangman.remove(message.channelReceiver)
+                            if (q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
+                                val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
+                                val channelobj = message.channelReceiver
+                                hangman.put(channelobj, hangmanObj)
+                                channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
+                                Thread.sleep(500)
+                                channelobj.sendMessage(hangmanObj.toString())
+                            }
+                        }
+                        ModuleHangman.Hangman.EnumResult.CONTINUE -> {
+                            //noop
                         }
                     }
-                    ModuleHangman.Hangman.EnumResult.CONTINUE -> {
-                        //noop
-                    }
+                    message.reply(hangman[message.channelReceiver]!!.toString())
                 }
-                message.reply(hangman[message.channelReceiver]!!.toString())
+
             }
         } else if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!guess ")) {
             if (hangman[message.channelReceiver]!!.lowerWord == message.content.replace("!guess ", "").toLowerCase()) {
@@ -134,7 +144,7 @@ object ModuleHangman : IModule {
                     val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
                     val channelobj = message.channelReceiver
                     hangman.put(channelobj, hangmanObj)
-                    channelobj.sendMessage("A new game of hangman has been started!")
+                    channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
                     Thread.sleep(500)
                     channelobj.sendMessage(hangmanObj.toString())
                 }
