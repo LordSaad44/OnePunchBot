@@ -14,17 +14,17 @@ import de.btobastian.javacord.entities.permissions.Role
 object ModuleSetup : IModule {
 
     override fun onMemberAdd(api: DiscordAPI, userid: User, server: Server): Boolean {
-        if(userid.isYourself)
-            server.channels.first { "general" in it.name }.sendMessage("Welcome to One Punch Bots! Please create channel named \"setup\" and type !startsetup there to continue setting up OPB.")
+        if (userid.isYourself)
+            server.channels.first { "general" in it.name }.sendMessage("Welcome to One Punch Bot! Please create channel named \"setup\" and type !startsetup there to continue setting up OPB.")
         return super.onMemberAdd(api, userid, server)
     }
 
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
-        val reply: (String)->Unit = {
+        val reply: (String) -> Unit = {
             message.reply(it)
             Thread.sleep(200)
         }
-        val doTryCatched: (()->Unit)->Unit = {
+        val doTryCatched: (() -> Unit) -> Unit = {
             try {
                 it()
             } catch(e: Exception) {
@@ -34,51 +34,51 @@ object ModuleSetup : IModule {
         }
         val server = message.channelReceiver?.server ?: return true
         var adminRole: Role? = null
-        if(message.channelReceiver.name == "setup" && message.content == "!startsetup") {
+        if (message.channelReceiver.name == "setup" && message.content == "!startsetup") {
             reply("Welcome to One Punch Bot!")
             reply("Let's begin with a little bit of setup.")
             reply("If you see any errors, please make an Admins role with every permission and apply it to the bot temporarily.")
 
             Thread.sleep(5000)
-            if(!api.yourself.getRoles(server).any { it.permissions.getState(PermissionType.ADMINISTRATOR) == PermissionState.ALLOWED }) {
+            if (!api.yourself.getRoles(server).any { it.permissions.getState(PermissionType.ADMINISTRATOR) == PermissionState.ALLOWED }) {
                 reply("Please give the bot an admin role before proceeding.")
                 return super.onMessage(api, message)
             }
-            if(!server.roles.any { it.name == "Admins" }) {
+            if (!server.roles.any { it.name == "Admins" }) {
                 reply("Creating Admins role...")
                 doTryCatched { server.createRole().get().apply { updateName("Admins") }.apply { adminRole = this } }
                 reply("Done. Update this role's permissions to \"Administrator\" and apply it to your server admins.")
             } else adminRole = server.getOrCreateRole("Admins")
             Thread.sleep(5000)
-            if(!server.roles.any { it.name == "Moderators" }) {
+            if (!server.roles.any { it.name == "Moderators" }) {
                 reply("Creating Moderators role...")
                 doTryCatched { server.createRole().get().apply { updateName("Moderators") } }
                 reply("Done. Update this role's permissions to whatever permissions your server moderators need and apply it to them.")
             }
             Thread.sleep(5000)
-            if(!server.roles.any { it.name == "Voice Chat" }) {
+            if (!server.roles.any { it.name == "Voice Chat" }) {
                 reply("Creating Voice Chat role...")
                 doTryCatched { server.createRole().get().apply { updateName("Voice Chat") } }
                 reply("Done.")
             }
             Thread.sleep(5000)
-            if(!server.channels.any { it.name == "admin-only" }) {
+            if (!server.channels.any { it.name == "admin-only" }) {
                 reply("Creating admin-only channel...")
                 doTryCatched {
                     val permissionsAllowed = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.ALLOWED).build()
                     val permissionsDenied = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.DENIED).build()
-                    val everyone: Role = server.getOrCreateRole("@everyone") ?: throw RuntimeException("No everyone role?")
+                    val everyone: Role = server.getOrCreateRole("@everyone")
                     server.createChannel("admin-only").get().apply { updateOverwrittenPermissions(adminRole!!, permissionsAllowed) }.apply { updateOverwrittenPermissions(everyone, permissionsDenied) }.apply { Holder.adminChannels.put(server.id, this) }
                 }
                 reply("Done.")
             }
             Thread.sleep(5000)
-            if(!server.channels.any { it.name == "modlog" }) {
+            if (!server.channels.any { it.name == "modlog" }) {
                 reply("Creating modlog channel...")
                 doTryCatched {
                     val permissionsAllowed = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.ALLOWED).build()
                     val permissionsDenied = api.permissionsBuilder.setState(PermissionType.READ_MESSAGES, PermissionState.DENIED).build()
-                    val everyone: Role = server.getOrCreateRole("@everyone") ?: throw RuntimeException("No everyone role?")
+                    val everyone: Role = server.getOrCreateRole("@everyone")
                     server.createChannel("modlog").get().apply { updateOverwrittenPermissions(adminRole!!, permissionsAllowed) }.apply { updateOverwrittenPermissions(everyone, permissionsDenied) }
                 }
                 reply("Done.")
@@ -107,7 +107,7 @@ object ModuleSetup : IModule {
             reply("You may now delete this channel. If you wish to see this message again, you may do !startsetup again now or in the future.")
             reply("If you wish to undo the changes done to your server in the process of this installation, please type !uninstall in a #setup channel. You need the Admins role to do that.")
             Thread.sleep(5000)
-        } else if(message.channelReceiver.name == "setup" && message.content == "!uninstall" && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {
+        } else if (message.channelReceiver.name == "setup" && message.content == "!uninstall" && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {
             reply("We are sorry you decided to uninstall One Punch Bot from your server.")
             reply("We will now uninstall all OPB related channels and roles. After that, you may install it back up using !startsetup or kick OPB from your server to finalize the uninstallation.")
             reply("One Punch Bot will not cease to work until you actually kick it out. Only the changes made in the setup process will be undone.")
