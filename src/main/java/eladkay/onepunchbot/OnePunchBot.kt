@@ -78,7 +78,10 @@ fun main(args: Array<String>) {
         override fun onSuccess(api: DiscordAPI?) {
             modules.forEach { it.onInit(api0) }
             api!!
-            while (api0.servers.toMutableList().size == 0);
+
+            // Wait for discord to catch up
+            while (api0.servers.toMutableList().size == 0) Thread.sleep(100)
+
             for(server in api.servers) {
                 Holder.adminChannels.put(server.id, server.getOrCreateChannel("admin-only"))
                 if(server.id == "212123426356199425") {
