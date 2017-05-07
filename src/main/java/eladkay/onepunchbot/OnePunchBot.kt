@@ -16,7 +16,7 @@ import de.btobastian.javacord.listener.message.MessageDeleteListener
 import eladkay.onepunchbot.Holder.admins
 
 
-val token = "Replace this string with your private token to run the bot. Don't commit that token."
+val token = tokenHeld
 
 object Holder {
     val adminChannels = mutableMapOf<String, Channel?>()
@@ -78,7 +78,7 @@ fun main(args: Array<String>) {
         override fun onSuccess(api: DiscordAPI?) {
             modules.forEach { it.onInit(api0) }
             api!!
-            
+
             // Wait for discord to catch up
             while (api0.servers.toMutableList().size == 0) Thread.sleep(100)
 
