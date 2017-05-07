@@ -11,7 +11,9 @@ import java.util.*
  * Created by Elad on 4/15/2017.
  */
 object ModuleHangman : IModule {
-    class Hangman(val word: String, var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN, val guessed: MutableList<Char> = mutableListOf(' ')) {
+    class Hangman(val word: String, val creator: String, var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN, val guessed: MutableList<Char> = mutableListOf()) {
+        private val lowerWord = word.toLowerCase()
+
         fun advance(): Boolean {
             if (stage == EnumHangmanStage.RIGHT_LEG)
                 return false
@@ -22,7 +24,7 @@ object ModuleHangman : IModule {
         fun getCharsFromWord() = mutableSetOf<Char>().apply { word.toCharArray().forEach { add(it) } }
         fun getWordWithUnderscores(): String {
             val builder = StringBuilder()
-            for (char in word) if (char in guessed) builder.append(char) else builder.append("_")
+            for (char in word) if (char.isLetter() && char.toLowerCase() in guessed) builder.append(char) else builder.append("_")
             return builder.toString()
         }
 
@@ -31,14 +33,14 @@ object ModuleHangman : IModule {
         }
 
         fun addChar(char: Char): EnumResult {
-            if (char !in word) {
+            if (char.toLowerCase() !in lowerWord) {
                 if (advance())
                     return EnumResult.CONTINUE
                 else
                     return EnumResult.LOSS
             }
 
-            guessed.add(char)
+            guessed.add(char.toLowerCase())
             if (getWordWithUnderscores() == word) return EnumResult.WIN
             return EnumResult.CONTINUE
         }
@@ -50,6 +52,7 @@ object ModuleHangman : IModule {
 
     val hangman = mutableMapOf<Channel, Hangman>()
     val q = mutableMapOf<Channel, Queue<Hangman>>()
+
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if (message.userReceiver != null && message.content.startsWith("!hangman ")) {
             val args = message.content.split(" ")
@@ -66,7 +69,7 @@ object ModuleHangman : IModule {
                 val channel = id.split("@")[0]
                 val channelobj = api.getServerById(server).getChannelById(channel)
                 if (hangman[channelobj] == null) {
-                    hangman.put(channelobj, Hangman(word.toLowerCase()))
+                    hangman.put(channelobj, Hangman(word.toLowerCase(), message.author.name))
                     message.reply("$word hangman is now running on $channelobj")
                     channelobj.sendMessage("${message.author.name} has started a game of Hangman!")
                     channelobj.sendMessage(hangman[channelobj].toString())
@@ -75,7 +78,7 @@ object ModuleHangman : IModule {
                         ArrayDeque()
                     }
                     val position = queue.size + 1
-                    queue.add(Hangman(word.toLowerCase()))
+                    queue.add(Hangman(word, message.author.name))
                     message.reply("$word hangman is now queued on $channelobj. Position on queue: $position")
                 }
             }
@@ -95,7 +98,7 @@ object ModuleHangman : IModule {
                             val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
                             val channelobj = message.channelReceiver
                             hangman.put(channelobj, hangmanObj)
-                            channelobj.sendMessage("A new game of hangman has been started!")
+                            channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
                             Thread.sleep(500)
                             channelobj.sendMessage(hangmanObj.toString())
                         }
@@ -109,7 +112,7 @@ object ModuleHangman : IModule {
                             val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
                             val channelobj = message.channelReceiver
                             hangman.put(channelobj, hangmanObj)
-                            channelobj.sendMessage("A new game of hangman has been started!")
+                            channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
                             Thread.sleep(500)
                             channelobj.sendMessage(hangmanObj.toString())
                         }

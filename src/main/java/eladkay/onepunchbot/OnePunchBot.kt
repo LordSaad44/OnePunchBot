@@ -87,7 +87,9 @@ fun main(args: Array<String>) {
         override fun onSuccess(api: DiscordAPI?) {
             modules.forEach { it.onInit(api0) }
             api!!
-            while (api0.servers.toMutableList().size == 0)
+
+            while (api0.servers.toMutableList().size == 0) {} // TODO
+
             for (server in api.servers) Holder.adminChannels.put(server.id, server.getOrCreateChannel("admin-only"))
             opm = api.getServerById("212123426356199425")
             println(opmAdmins)
