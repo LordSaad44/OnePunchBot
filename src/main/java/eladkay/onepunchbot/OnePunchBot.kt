@@ -17,7 +17,7 @@ import eladkay.onepunchbot.Holder.opm
 import eladkay.onepunchbot.Holder.opmAdmins
 
 
-val token = tokenHeld
+val token = "Replace this string with your private token to run the bot. Don't commit that token."
 
 object Holder {
     val adminChannels = mutableMapOf<String, Channel?>()
