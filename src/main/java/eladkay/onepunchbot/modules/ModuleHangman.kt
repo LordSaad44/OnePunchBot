@@ -27,11 +27,8 @@ object ModuleHangman : IModule {
             return true
         }
 
-        fun getWordWithUnderscores(): String {
-            val builder = StringBuilder()
-            for (char in word) if (!char.isLetter() || char.toLowerCase() in guessed) builder.append(char) else builder.append("_")
-            return builder.toString()
-        }
+        val wordWithUnderscores: String
+            get() = word.map {if (!it.isLetter() || it.toLowerCase() in guessed) it else '_' }.joinToString(" ")
 
         enum class EnumResult {
             CONTINUE, LOSS, WIN
@@ -49,7 +46,7 @@ object ModuleHangman : IModule {
 
             if (char.toLowerCase() !in guessed)
                 guessed.add(char.toLowerCase())
-            if (getWordWithUnderscores() == word) return EnumResult.WIN
+            if (wordWithUnderscores == word) return EnumResult.WIN
             return EnumResult.CONTINUE
         }
 
@@ -57,7 +54,7 @@ object ModuleHangman : IModule {
             get() = "Guessed: ${alphabet.map { if (it in guessed) it else '_' }.joinToString("")}\n"
 
         override fun toString(): String {
-            return "$guessedLetters${LargeStringHolder.HANGMAN_1}${stage.man}${LargeStringHolder.HANGMAN_2}``${getWordWithUnderscores()}``"
+            return "$guessedLetters${LargeStringHolder.HANGMAN_1}${stage.man}${LargeStringHolder.HANGMAN_2}``${wordWithUnderscores}``"
         }
     }
 
