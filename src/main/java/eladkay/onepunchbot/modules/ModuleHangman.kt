@@ -14,7 +14,7 @@ import java.util.*
 @WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleHangman : IModule {
     class Hangman(val word: String, val creator: String, var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN, val guessed: MutableList<Char> = mutableListOf()) {
-        private val lowerWord = word.toLowerCase()
+        val lowerWord = word.toLowerCase()
 
         fun advance(): Boolean {
             if (stage == EnumHangmanStage.RIGHT_LEG)
@@ -126,7 +126,7 @@ object ModuleHangman : IModule {
                 message.reply(hangman[message.channelReceiver]!!.toString())
             }
         } else if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!guess ")) {
-            if (hangman[message.channelReceiver]!!.word == message.content.replace("!guess ", "").toLowerCase()) {
+            if (hangman[message.channelReceiver]!!.lowerWord == message.content.replace("!guess ", "").toLowerCase()) {
                 message.reply(LargeStringHolder.CORRECT)
                 message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
                 hangman.remove(message.channelReceiver)
