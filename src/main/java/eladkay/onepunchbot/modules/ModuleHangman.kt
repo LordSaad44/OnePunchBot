@@ -38,7 +38,7 @@ object ModuleHangman : IModule {
         }
 
         fun addChar(char: Char): EnumResult {
-            if (!char.isLetter()) return EnumResult.CONTINUE
+            if (!char.isLetter() || char.toLowerCase() in guessed) return EnumResult.CONTINUE
 
             if (char.toLowerCase() !in lowerWord) {
                 if (advance())
