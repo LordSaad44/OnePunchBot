@@ -16,7 +16,8 @@ import de.btobastian.javacord.listener.message.MessageDeleteListener
 import eladkay.onepunchbot.Holder.admins
 
 
-val token = tokenHeld // set this to "" or whatever your own token is
+val token = tokenHeld
+
 
 object Holder {
     val adminChannels = mutableMapOf<String, Channel?>()
