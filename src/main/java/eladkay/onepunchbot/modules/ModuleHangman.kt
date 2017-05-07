@@ -71,7 +71,7 @@ object ModuleHangman : IModule {
                 val channel = id.split("@")[0]
                 val channelobj = api.getServerById(server).getChannelById(channel)
                 if (hangman[channelobj] == null) {
-                    hangman.put(channelobj, Hangman(word.toLowerCase(), message.author.name))
+                    hangman.put(channelobj, Hangman(word, message.author.name))
                     message.reply("$word hangman is now running on $channelobj")
                     channelobj.sendMessage("${message.author.name} has started a game of Hangman!")
                     channelobj.sendMessage(hangman[channelobj].toString())
