@@ -16,7 +16,7 @@ import de.btobastian.javacord.listener.message.MessageDeleteListener
 import eladkay.onepunchbot.Holder.admins
 
 
-val token = "Replace this string with your private token to run the bot. Don't commit that token."
+val token = tokenHeld
 
 object Holder {
     val adminChannels = mutableMapOf<String, Channel?>()

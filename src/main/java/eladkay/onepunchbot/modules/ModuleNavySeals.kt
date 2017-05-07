@@ -12,7 +12,7 @@ import eladkay.onepunchbot.NavySealery
 object ModuleNavySeals : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if("!navyseals" in message.content)
-            else if(":balance:" in message.content)
+            if(":balance:" in message.content)
                 message.reply(LargeStringHolder.NAVY_SEAL_MC)
             else if(":latin:" in message.content)
                 message.reply(LargeStringHolder.NAVY_SEAL_LATIN)
