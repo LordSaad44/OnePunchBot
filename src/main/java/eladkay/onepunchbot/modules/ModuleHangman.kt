@@ -11,40 +11,48 @@ import java.util.*
  * Created by Elad on 4/15/2017.
  */
 object ModuleHangman : IModule {
-    class Hangman(val word: String, var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN, val guessed: MutableList<Char> = mutableListOf(' ')) {
+    class Hangman(val word: String, val creator: String, var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN, val guessed: MutableList<Char> = mutableListOf()) {
+        private val lowerWord = word.toLowerCase()
+
         fun advance(): Boolean {
-            if(stage == EnumHangmanStage.RIGHT_LEG)
+            if (stage == EnumHangmanStage.RIGHT_LEG)
                 return false
             else stage = EnumHangmanStage.values()[stage.ordinal + 1]
             return true
         }
+
         fun getCharsFromWord() = mutableSetOf<Char>().apply { word.toCharArray().forEach { add(it) } }
         fun getWordWithUnderscores(): String {
             val builder = StringBuilder()
-            for (char in word)  if(char in guessed) builder.append(char) else builder.append("_")
+            for (char in word) if (char.isLetter() && char.toLowerCase() in guessed) builder.append(char) else builder.append("_")
             return builder.toString()
         }
+
         enum class EnumResult {
             CONTINUE, LOSS, WIN
         }
+
         fun addChar(char: Char): EnumResult {
-            if(char !in word) {
+            if (char.toLowerCase() !in lowerWord) {
                 if (advance())
                     return EnumResult.CONTINUE
                 else
                     return EnumResult.LOSS
             }
 
-            guessed.add(char)
-            if(getWordWithUnderscores() == word) return EnumResult.WIN
+            guessed.add(char.toLowerCase())
+            if (getWordWithUnderscores() == word) return EnumResult.WIN
             return EnumResult.CONTINUE
         }
+
         override fun toString(): String {
             return "${LargeStringHolder.HANGMAN_1}${stage.man}${LargeStringHolder.HANGMAN_2}``${getWordWithUnderscores()}``"
         }
     }
+
     val hangman = mutableMapOf<Channel, Hangman>()
     val q = mutableMapOf<Channel, Queue<Hangman>>()
+
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if (message.userReceiver != null && message.content.startsWith("!hangman ")) {
             val args = message.content.split(" ")
@@ -53,15 +61,15 @@ object ModuleHangman : IModule {
             } else {
                 val id = args[1]
                 val word = args.subList(2, args.size).joinToString(" ")
-                if("@" in word) {
+                if ("@" in word) {
                     message.reply("Haha no")
                     return super.onMessage(api, message)
                 }
                 val server = id.split("@")[1]
                 val channel = id.split("@")[0]
                 val channelobj = api.getServerById(server).getChannelById(channel)
-                if(hangman[channelobj] == null) {
-                    hangman.put(channelobj, Hangman(word.toLowerCase()))
+                if (hangman[channelobj] == null) {
+                    hangman.put(channelobj, Hangman(word.toLowerCase(), message.author.name))
                     message.reply("$word hangman is now running on $channelobj")
                     channelobj.sendMessage("${message.author.name} has started a game of Hangman!")
                     channelobj.sendMessage(hangman[channelobj].toString())
@@ -70,7 +78,7 @@ object ModuleHangman : IModule {
                         ArrayDeque()
                     }
                     val position = queue.size + 1
-                    queue.add(Hangman(word.toLowerCase()))
+                    queue.add(Hangman(word, message.author.name))
                     message.reply("$word hangman is now queued on $channelobj. Position on queue: $position")
                 }
             }
@@ -86,11 +94,11 @@ object ModuleHangman : IModule {
                         message.reply(LargeStringHolder.LOSS)
                         message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
                         hangman.remove(message.channelReceiver)
-                        if(q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
+                        if (q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
                             val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
                             val channelobj = message.channelReceiver
                             hangman.put(channelobj, hangmanObj)
-                            channelobj.sendMessage("A new game of hangman has been started!")
+                            channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
                             Thread.sleep(500)
                             channelobj.sendMessage(hangmanObj.toString())
                         }
@@ -100,11 +108,11 @@ object ModuleHangman : IModule {
                         message.reply(LargeStringHolder.CORRECT)
                         message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
                         hangman.remove(message.channelReceiver)
-                        if(q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
+                        if (q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
                             val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
                             val channelobj = message.channelReceiver
                             hangman.put(channelobj, hangmanObj)
-                            channelobj.sendMessage("A new game of hangman has been started!")
+                            channelobj.sendMessage("\n${hangmanObj.creator} has started a game of Hangman!")
                             Thread.sleep(500)
                             channelobj.sendMessage(hangmanObj.toString())
                         }
@@ -120,7 +128,7 @@ object ModuleHangman : IModule {
                 message.reply(LargeStringHolder.CORRECT)
                 message.reply("Phrase: ${hangman[message.channelReceiver]!!.word}")
                 hangman.remove(message.channelReceiver)
-                if(q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
+                if (q.getOrPut(message.channelReceiver) { ArrayDeque() }.peek() != null) {
                     val hangmanObj = q.getOrPut(message.channelReceiver) { ArrayDeque() }.poll()!!
                     val channelobj = message.channelReceiver
                     hangman.put(channelobj, hangmanObj)
@@ -136,6 +144,7 @@ object ModuleHangman : IModule {
         }
         return super.onMessage(api, message)
     }
+
     enum class EnumHangmanStage(val man: String) {
         NO_MAN("  |\n  |\n  |\n"), //'s sky
         HEAD("  |                   O\n  |\n  |\n"), //, shoulders, knees and toes
