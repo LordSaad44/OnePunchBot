@@ -14,6 +14,10 @@ import java.util.*
 @WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleHangman : IModule {
     class Hangman(val word: String, val creator: String, var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN, val guessed: MutableList<Char> = mutableListOf()) {
+        companion object {
+            private val alphabet = (0 until 26).map { (it + 0x61).toChar() }.joinToString("")
+        }
+
         val lowerWord = word.toLowerCase()
 
         fun advance(): Boolean {
@@ -23,7 +27,6 @@ object ModuleHangman : IModule {
             return true
         }
 
-        fun getCharsFromWord() = mutableSetOf<Char>().apply { word.toCharArray().forEach { add(it) } }
         fun getWordWithUnderscores(): String {
             val builder = StringBuilder()
             for (char in word) if (!char.isLetter() || char.toLowerCase() in guessed) builder.append(char) else builder.append("_")
@@ -44,13 +47,17 @@ object ModuleHangman : IModule {
                     return EnumResult.LOSS
             }
 
-            guessed.add(char.toLowerCase())
+            if (char.toLowerCase() !in guessed)
+                guessed.add(char.toLowerCase())
             if (getWordWithUnderscores() == word) return EnumResult.WIN
             return EnumResult.CONTINUE
         }
 
+        val guessedLetters: String
+            get() = "Guessed: ${alphabet.map { if (it in guessed) it else '_' }.joinToString("")}\n"
+
         override fun toString(): String {
-            return "${LargeStringHolder.HANGMAN_1}${stage.man}${LargeStringHolder.HANGMAN_2}``${getWordWithUnderscores()}``"
+            return "$guessedLetters${LargeStringHolder.HANGMAN_1}${stage.man}${LargeStringHolder.HANGMAN_2}``${getWordWithUnderscores()}``"
         }
     }
 
@@ -68,8 +75,7 @@ object ModuleHangman : IModule {
                 if ("@" in word) {
                     message.reply("@ tags are not permitted for hangman words, because of possible abuse. Please try again.")
                     return super.onMessage(api, message)
-                }
-                if (word.none { it.isLetter() }) {
+                } else if (word.none { it.isLetter() }) {
                     message.reply("Your hangman doesn't have any letters to guess! Please try again.")
                     return super.onMessage(api, message)
                 }
@@ -162,8 +168,8 @@ object ModuleHangman : IModule {
         HEAD("  |                   O\n  |\n  |\n"), //, shoulders, knees and toes
         /* 'cause i'm, missing more than just your */ BODY("  |                   O\n  |                  |\n  |\n"),
         RIGHT_ARM("  |                  O\n  |                   |\\\n  |\n"), //that's when the puns start getting boring
-        LEFT_ARM("  |                  O\n  |                   /|\\\n  |\n"), //yup
-        LEFT_LEG("  |                  O\n  |                   /|\\\n  |                  /\n"), //mehhhhh
-        RIGHT_LEG("  |                  O\n  |                   /|\\\n  |                  /\\\n"), //it's over, finally
+        LEFT_ARM("  |                  O\n  |                 /|\\\n  |\n"), //yup
+        LEFT_LEG("  |                  O\n  |                 /|\\\n  |                  /\n"), //mehhhhh
+        RIGHT_LEG("  |                  O\n  |                 /|\\\n  |                  /\\\n"), //it's over, finally
     }
 }
