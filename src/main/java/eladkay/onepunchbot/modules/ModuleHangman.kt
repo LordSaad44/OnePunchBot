@@ -4,6 +4,8 @@ import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.Channel
 import de.btobastian.javacord.entities.message.Message
 import de.btobastian.javacord.entities.message.embed.EmbedBuilder
+import de.btobastian.javacord.entities.permissions.PermissionState
+import de.btobastian.javacord.entities.permissions.PermissionType
 import eladkay.onepunchbot.IModule
 import eladkay.onepunchbot.LargeStringHolder
 import java.awt.Color
@@ -46,6 +48,12 @@ object ModuleHangman : IModule {
                 }
                 ModuleHangman.Hangman.EnumResult.CONTINUE -> update(message.channelReceiver)
             }
+        }
+
+        fun forceEnd(message: Message) {
+            message.reply("This hangman game was forcefully ended.")
+            message.reply("Phrase: $word")
+            endAndQueue(message.channelReceiver)
         }
 
         fun createMessage(): EmbedBuilder {
@@ -190,6 +198,17 @@ object ModuleHangman : IModule {
             val hangmanObj = hangman[message.channelReceiver]
             val phrase = message.content.replace("!guess", "").trim()
             hangmanObj?.handleResult(message, hangmanObj.guessPhrase(phrase))
+        } else if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!executioner")) {
+            val roles = message.author.getRoles(message.channelReceiver.server)
+            val manage = roles.any { it.getOverwrittenPermissions(message.channelReceiver).getState(PermissionType.ADMINISTRATOR) == PermissionState.ALLOWED } ||
+                    roles.any { it.getOverwrittenPermissions(message.channelReceiver).getState(PermissionType.MANAGE_MESSAGES) == PermissionState.ALLOWED } ||
+                    message.channelReceiver.getOverwrittenPermissions(message.author).getState(PermissionType.MANAGE_MESSAGES) == PermissionState.ALLOWED
+
+            message.delete()
+            if (manage) {
+                val hangmanObj = hangman[message.channelReceiver]
+                hangmanObj?.forceEnd(message)
+            }
         }
         return super.onMessage(api, message)
     }
