@@ -14,8 +14,18 @@ import eladkay.onepunchbot.getOrCreateChannel
  */
 @WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleModlog : IModule {
+
+    val ignoreMessages = mutableListOf<Message>()
+
+
     val handle = { a: String -> a.replace("`", "'"); "`$a`" }
+
     override fun onMessageDeleted(api: DiscordAPI, message: Message): Boolean {
+        if (message in ignoreMessages) {
+            ignoreMessages.remove(message)
+            return super.onMessageDeleted(api, message)
+        }
+
         val modlog = message.channelReceiver.server.getOrCreateChannel("modlog")
         if (message.channelReceiver != modlog && "conduit" !in message.content) {
             if (":autorip:" !in message.content)
@@ -27,6 +37,9 @@ object ModuleModlog : IModule {
     }
 
     override fun onMessageEdited(api: DiscordAPI, message: Message, old: String): Boolean {
+        if (message in ignoreMessages)
+            return super.onMessageEdited(api, message, old)
+
         val modlog = message.channelReceiver.server.getOrCreateChannel("modlog")
         if (message.channelReceiver != modlog && message !in ModulePoll.polls.map { it.message })
             modlog.sendMessage("Message by ${message.author.name} edited: \"${handle(old)}\" -> \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")
