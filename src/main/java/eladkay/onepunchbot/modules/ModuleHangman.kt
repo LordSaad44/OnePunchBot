@@ -34,6 +34,16 @@ object ModuleHangman : IModule {
             channel.sendMessage("", createMessage())
         }
 
+        fun endAndQueue(channel: Channel) {
+            lastMessage?.delete()
+            hangman.remove(channel)
+
+            if (q.getOrPut(channel) { ArrayDeque() }.peek() != null) {
+                val newHangmanObj = q.getOrPut(channel) { ArrayDeque() }.poll()!!
+                newHangmanObj.start(channel)
+            }
+        }
+
         fun handleResult(message: Message, result: EnumResult) {
             when (result) {
                 ModuleHangman.Hangman.EnumResult.LOSS -> {
@@ -132,18 +142,6 @@ object ModuleHangman : IModule {
 
         override fun toString(): String {
             return "${LargeStringHolder.HANGMAN_1}${stage.man.joinToString("\n")}\n${LargeStringHolder.HANGMAN_2}"
-        }
-    }
-
-
-    fun endAndQueue(channel: Channel) {
-        val hangmanObj = hangman[channel]
-        hangmanObj?.lastMessage?.delete()
-        hangman.remove(channel)
-
-        if (q.getOrPut(channel) { ArrayDeque() }.peek() != null) {
-            val newHangmanObj = q.getOrPut(channel) { ArrayDeque() }.poll()!!
-            newHangmanObj.start(channel)
         }
     }
 
