@@ -28,7 +28,7 @@ object ModuleHangman : IModule {
         }
 
         val wordWithUnderscores: String
-            get() = word.map {if (!it.isLetter() || it.toLowerCase() in guessed) it else '_' }.joinToString(" ")
+            get() = word.map {if (!it.isLetter() || it.toLowerCase() in guessed) it.toString() else "\\_" }.joinToString("")
 
         enum class EnumResult {
             CONTINUE, LOSS, WIN
@@ -51,7 +51,7 @@ object ModuleHangman : IModule {
         }
 
         val guessedLetters: String
-            get() = "Guessed: ${alphabet.map { if (it in guessed) it else '_' }.joinToString("")}\n"
+            get() = "Guessed: ${alphabet.map { if (it in guessed) it.toString() else "\\_" }.joinToString("")}\n"
 
         override fun toString(): String {
             return "$guessedLetters${LargeStringHolder.HANGMAN_1}${stage.man}${LargeStringHolder.HANGMAN_2}``${wordWithUnderscores}``"
