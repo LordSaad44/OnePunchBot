@@ -20,6 +20,12 @@ object ModuleHangman : IModule {
 
         var lastMessage: Message? = null
 
+        fun start(channel: Channel) {
+            channel.sendMessage("$creator has started a game of Hangman!")
+            hangman.put(channel, this)
+            update(channel)
+        }
+
         fun update(channel: Channel) {
             val last = lastMessage
             last?.delete()
@@ -129,10 +135,7 @@ object ModuleHangman : IModule {
 
         if (q.getOrPut(channel) { ArrayDeque() }.peek() != null) {
             val newHangmanObj = q.getOrPut(channel) { ArrayDeque() }.poll()!!
-            hangman.put(channel, newHangmanObj)
-            channel.sendMessage("\n${newHangmanObj.creator} has started a game of Hangman!")
-            Thread.sleep(500)
-            newHangmanObj.update(channel)
+            newHangmanObj.start(channel)
         }
     }
 
@@ -145,7 +148,7 @@ object ModuleHangman : IModule {
         if (message.userReceiver != null && message.content.startsWith("!hangman ")) {
             val args = message.content.split(" ")
             if (args.size < 3) {
-                message.reply("Invalid! use: !hangman <channelid> <word>")
+                message.reply("Invalid! Use: !hangman <channelid> <word>")
             } else {
                 val id = args[1]
                 val word = args.subList(2, args.size).joinToString(" ")
@@ -161,14 +164,11 @@ object ModuleHangman : IModule {
                 val channelobj = api.getServerById(server).getChannelById(channel)
                 if (hangman[channelobj] == null) {
                     val hangmanObj = Hangman(word, message.author.name)
-                    hangman.put(channelobj, hangmanObj)
                     message.reply("$word\n\nThis hangman is now running on $channelobj.")
-                    channelobj.sendMessage("${message.author.name} has started a game of Hangman!")
-                    hangmanObj.update(channelobj)
+
+                    hangmanObj.start(channelobj)
                 } else {
-                    val queue = q.getOrPut(channelobj) {
-                        ArrayDeque()
-                    }
+                    val queue = q.getOrPut(channelobj) { ArrayDeque() }
                     val position = queue.size + 1
                     queue.add(Hangman(word, message.author.name))
                     message.reply("$word\n\nThis hangman has now been queued on $channelobj. Position on queue: $position")
