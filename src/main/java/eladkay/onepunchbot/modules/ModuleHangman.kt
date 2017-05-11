@@ -67,11 +67,7 @@ object ModuleHangman : IModule {
         }
 
         fun createMessage(): String {
-            return """
-            |Guessed Letters: $guessedLetters
-            |Guessed Phrases: $guessedPhrases
-            |$this
-            |``$wordWithUnderscores``""".trimMargin()
+            return "Guessed Letters: $guessedLetters\nGuessed Phrases: $guessedPhrases\n$this\n``$wordWithUnderscores``"
         }
 
         var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN
