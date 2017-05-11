@@ -31,7 +31,7 @@ object ModuleHangman : IModule {
         fun update(channel: Channel) {
             val last = lastMessage
             last?.delete()
-            lastMessage = channel.sendMessage("", createMessage()).get()
+            lastMessage = channel.sendMessage(createMessage()).get()
         }
 
         fun endAndQueue(channel: Channel) {
@@ -66,15 +66,12 @@ object ModuleHangman : IModule {
             endAndQueue(message.channelReceiver)
         }
 
-        fun createMessage(): EmbedBuilder {
-            val embedBuilder = EmbedBuilder()
-            embedBuilder.setTitle("Hangman")
-            embedBuilder.addField("Guessed Letters", guessedLetters, true)
-            embedBuilder.addField("Guessed Phrases", guessedPhrases, true)
-            embedBuilder.addField("Hangman", toString(), true)
-            embedBuilder.addField("Word", "``$wordWithUnderscores``", true)
-            embedBuilder.setColor(Color(0x71d685))
-            return embedBuilder
+        fun createMessage(): String {
+            return """
+            |Guessed Letters: $guessedLetters
+            |Guessed Phrases: $guessedPhrases
+            |$this
+            |``$wordWithUnderscores``""".trimMargin()
         }
 
         var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN
