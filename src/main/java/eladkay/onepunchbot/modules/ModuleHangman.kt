@@ -31,7 +31,7 @@ object ModuleHangman : IModule {
         fun update(channel: Channel) {
             val last = lastMessage
             last?.delete()
-            channel.sendMessage("", createMessage())
+            lastMessage = channel.sendMessage("", createMessage()).get()
         }
 
         fun endAndQueue(channel: Channel) {
