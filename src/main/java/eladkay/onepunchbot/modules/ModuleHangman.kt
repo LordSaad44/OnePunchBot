@@ -147,37 +147,13 @@ object ModuleHangman : IModule {
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
         if (message.userReceiver != null && message.content.startsWith("!hangman ")) {
             val args = message.content.split(" ")
-            if (args.size < 3) {
-                message.reply("Invalid! Use: !hangman <channelid> <word>")
-            } else {
-                val id = args[1]
-                val word = args.subList(2, args.size).joinToString(" ")
-                if ("@" in word) {
-                    message.reply("@ tags are not permitted for hangman words, because of possible abuse. Please try again.")
-                    return super.onMessage(api, message)
-                } else if (word.none { it.isLetter() }) {
-                    message.reply("Your hangman doesn't have any letters to guess! Please try again.")
-                    return super.onMessage(api, message)
-                }
-                val server = id.split("@")[1]
-                val channel = id.split("@")[0]
-                val channelobj = api.getServerById(server).getChannelById(channel)
-                if (hangman[channelobj] == null) {
-                    val hangmanObj = Hangman(word, message.author.name)
-                    message.reply("$word\n\nThis hangman is now running on $channelobj.")
-
-                    hangmanObj.start(channelobj)
-                } else {
-                    val queue = q.getOrPut(channelobj) { ArrayDeque() }
-                    val position = queue.size + 1
-                    queue.add(Hangman(word, message.author.name))
-                    message.reply("$word\n\nThis hangman has now been queued on $channelobj. Position on queue: $position")
-                }
-            }
-
+            start(args, message, api)
         } else if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!hangman ")) {
             message.delete()
-            if (message.content.replace("!hangman ", "").isNotEmpty()) {
+
+            if (message.content.startsWith("!hangman here ")) {
+                start(message.content.split(" "), message, api)
+            } else if (message.content.replace("!hangman ", "").isNotEmpty()) {
                 val letter = message.content.replace("!hangman", "").trim()[0]
                 if (letter.isLetter()) {
                     val hangmanObj = hangman[message.channelReceiver]
@@ -203,6 +179,47 @@ object ModuleHangman : IModule {
             }
         }
         return super.onMessage(api, message)
+    }
+
+    fun start(args: List<String>, message: Message, api: DiscordAPI) {
+        if (args.size < 3) {
+            message.reply("Invalid! Use: !hangman <channelid> <word>")
+            return
+        }
+
+        val id = args[1]
+        val word = args.subList(2, args.size).joinToString(" ")
+        if ("@" in word) {
+            message.reply("@ tags are not permitted for hangman words, because of possible abuse. Please try again.")
+            return
+        } else if (word.none { it.isLetter() }) {
+            message.reply("Your hangman doesn't have any letters to guess! Please try again.")
+            return
+        }
+        val channelobj = if (id == "here") {
+            message.channelReceiver
+        } else {
+            val server = id.split("@")[1]
+            val channel = id.split("@")[0]
+            api.getServerById(server).getChannelById(channel)
+        }
+
+        if (channelobj == null) {
+            message.reply("That isn't a channel!")
+            return
+        }
+
+        if (hangman[channelobj] == null) {
+            val hangmanObj = Hangman(word, message.author.name)
+            message.reply("$word\n\nThis hangman is now running on $channelobj.")
+
+            hangmanObj.start(channelobj)
+        } else {
+            val queue = q.getOrPut(channelobj) { ArrayDeque() }
+            val position = queue.size + 1
+            queue.add(Hangman(word, message.author.name))
+            message.reply("$word\n\nThis hangman has now been queued on $channelobj. Position on queue: $position")
+        }
     }
 
     enum class EnumHangmanStage(vararg val man: String) {
