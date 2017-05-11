@@ -40,7 +40,7 @@ object ModuleSetup : IModule {
             reply("If you see any errors, please make an Admins role with every permission and apply it to the bot temporarily.")
 
             Thread.sleep(5000)
-            if (!api.yourself.getRoles(server).any { it.permissions.getState(PermissionType.ADMINISTATOR) == PermissionState.ALLOWED }) {
+            if (!api.yourself.getRoles(server).any { it.permissions.getState(PermissionType.ADMINISTRATOR) == PermissionState.ALLOWED }) {
                 reply("Please give the bot an admin role before proceeding.")
                 return super.onMessage(api, message)
             }

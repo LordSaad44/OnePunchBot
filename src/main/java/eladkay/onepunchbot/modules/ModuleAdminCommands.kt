@@ -19,6 +19,13 @@ object ModuleAdminCommands : IModule {
                 }
             }
             message.reply("Gave everyone rank $rank")
+        } else  if (message.content.startsWith("!giverank ", true) && message.author.getRoles(message.channelReceiver.server).any { it.name == "Admins" }) {
+            val rank = message.channelReceiver.server.roles.firstOrNull { it.name == message.content.replace("!giverank ", "") }
+                if (!message.author.getRoles(message.channelReceiver.server).contains(rank)) {
+                    rank?.addUser(message.author)
+                    Thread.sleep(2000)
+                    message.reply("Gave ${message.author} rank $rank")
+                }
         }
         return super.onMessage(api, message)
     }

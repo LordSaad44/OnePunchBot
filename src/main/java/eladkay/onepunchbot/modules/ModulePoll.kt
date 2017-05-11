@@ -58,11 +58,16 @@ object ModulePoll : IModule {
             var first = true
             val contents = message.content.replace("!poll ", "").replace("on", "").toCharArray().map {
                 var something = it; if (first) {
-                something = it.toUpperCase(); first = false
-            }; something
+                    something = it.toUpperCase(); first = false
+                }; something
             }.joinToString("")
             val uuid = UUID.randomUUID().leastSignificantBits % 1000
             val msg = message.reply("(id: $uuid) Poll (vote with 👍 and 👎 reactions): $contents? Votes: 0").get()
+            Thread.sleep(100)
+            msg.addUnicodeReaction("👍")
+            Thread.sleep(100)
+            msg.addUnicodeReaction("👎")
+            Thread.sleep(100)
             polls.add(Poll(message = msg, orig = contents, id = uuid))
 
         } else if (message.content.startsWith("!pollpolls ")) {
