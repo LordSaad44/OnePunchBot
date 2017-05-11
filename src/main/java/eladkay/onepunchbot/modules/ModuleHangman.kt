@@ -181,17 +181,17 @@ object ModuleHangman : IModule {
 
     fun start(args: List<String>, message: Message, api: DiscordAPI) {
         if (args.size < 3) {
-            message.reply("Invalid! Use: !hangman <channelid> <word>")
+            message.author.sendMessage("Invalid! Use: !hangman <channelid> <word>")
             return
         }
 
         val id = args[1]
         val word = args.subList(2, args.size).joinToString(" ")
         if ("@" in word) {
-            message.reply("@ tags are not permitted for hangman words, because of possible abuse. Please try again.")
+            message.author.sendMessage("@ tags are not permitted for hangman words, because of possible abuse. Please try again.")
             return
         } else if (word.none { it.isLetter() }) {
-            message.reply("Your hangman doesn't have any letters to guess! Please try again.")
+            message.author.sendMessage("Your hangman doesn't have any letters to guess! Please try again.")
             return
         }
         val channelobj = if (id == "here") {
@@ -203,20 +203,21 @@ object ModuleHangman : IModule {
         }
 
         if (channelobj == null) {
-            message.reply("That isn't a channel!")
+            if (message.channelReceiver == null)
+                message.reply("That isn't a channel!")
             return
         }
 
         if (hangman[channelobj] == null) {
             val hangmanObj = Hangman(word, message.author.name)
-            message.reply("$word\n\nThis hangman is now running on $channelobj.")
+            message.author.sendMessage("$word\n\nThis hangman is now running on $channelobj.")
 
             hangmanObj.start(channelobj)
         } else {
             val queue = q.getOrPut(channelobj) { ArrayDeque() }
             val position = queue.size + 1
             queue.add(Hangman(word, message.author.name))
-            message.reply("$word\n\nThis hangman has now been queued on $channelobj. Position on queue: $position")
+            message.author.sendMessage("$word\n\nThis hangman has now been queued on $channelobj. Position on queue: $position")
         }
     }
 

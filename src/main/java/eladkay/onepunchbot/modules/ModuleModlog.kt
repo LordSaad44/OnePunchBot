@@ -8,6 +8,7 @@ import de.btobastian.javacord.entities.permissions.Role
 import eladkay.onepunchbot.IModule
 import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 import eladkay.onepunchbot.getOrCreateChannel
+import eladkay.onepunchbot.startsWith
 
 /**
  * Created by Elad on 2/3/2017.
@@ -26,7 +27,7 @@ object ModuleModlog : IModule {
             return super.onMessageDeleted(api, message)
         }
 
-        if ("Hangman < ---- > Hangman" in message.content) return super.onMessageDeleted(api, message)
+        if ("Hangman < ---- > Hangman" in message.content || message.startsWith("!hangman") || message.startsWith("!guess")) return super.onMessageDeleted(api, message)
 
         val modlog = message.channelReceiver.server.getOrCreateChannel("modlog")
         if (message.channelReceiver != modlog && "conduit" !in message.content) {
