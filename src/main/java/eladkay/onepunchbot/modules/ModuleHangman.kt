@@ -113,6 +113,8 @@ object ModuleHangman : IModule {
         }
 
         fun guessPhrase(phrase: String): EnumResult {
+            if (phrase.length == 1 && phrase[0].isLetter()) return addChar(phrase[0])
+
             if (phrase.toLowerCase() in lowerPhrases) return EnumResult.CONTINUE
 
             if (phrase.toLowerCase() !in lowerPhrases) {
