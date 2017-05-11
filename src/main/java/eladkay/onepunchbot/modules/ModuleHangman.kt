@@ -145,15 +145,10 @@ object ModuleHangman : IModule {
     val q = mutableMapOf<Channel, Queue<Hangman>>()
 
     override fun onMessage(api: DiscordAPI, message: Message): Boolean {
-        if (message.userReceiver != null && message.content.startsWith("!hangman ")) {
-            val args = message.content.split(" ")
-            start(args, message, api)
-        } else if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!hangman ")) {
+        if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!hangman ")) {
             message.delete()
 
-            if (message.content.startsWith("!hangman here ")) {
-                start(message.content.split(" "), message, api)
-            } else if (message.content.replace("!hangman ", "").isNotEmpty()) {
+            if (message.content.replace("!hangman ", "").isNotEmpty()) {
                 val letter = message.content.replace("!hangman", "").trim()[0]
                 if (letter.isLetter()) {
                     val hangmanObj = hangman[message.channelReceiver]
@@ -161,6 +156,8 @@ object ModuleHangman : IModule {
                 }
 
             }
+        } else if (message.content.startsWith("!hangman ")) {
+            start(message.content.split(" "), message, api)
         } else if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!guess ")) {
             message.delete()
             val hangmanObj = hangman[message.channelReceiver]
