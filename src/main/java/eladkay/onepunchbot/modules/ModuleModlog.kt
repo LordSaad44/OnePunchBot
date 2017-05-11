@@ -26,6 +26,8 @@ object ModuleModlog : IModule {
             return super.onMessageDeleted(api, message)
         }
 
+        if ("Hangman < ---- > Hangman" in message.content) return super.onMessageDeleted(api, message)
+
         val modlog = message.channelReceiver.server.getOrCreateChannel("modlog")
         if (message.channelReceiver != modlog && "conduit" !in message.content) {
             if (":autorip:" !in message.content)

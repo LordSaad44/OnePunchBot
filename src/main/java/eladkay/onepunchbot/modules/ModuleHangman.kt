@@ -68,7 +68,7 @@ object ModuleHangman : IModule {
         }
 
         fun createMessage(): String {
-            return "Guessed Letters: $guessedLetters\nGuessed Phrases: $guessedPhrases\n$this\n``$wordWithUnderscores``"
+            return "Hangman < ---- > Hangman\nGuessed Letters: $guessedLetters\nGuessed Phrases: $guessedPhrases\n$this\n``$wordWithUnderscores``"
         }
 
         var stage: EnumHangmanStage = EnumHangmanStage.NO_MAN
@@ -129,7 +129,7 @@ object ModuleHangman : IModule {
         }
 
         val guessedLetters: String
-            get() = alphabet.map { if (it in guessed) "**$it**" else "~~__${it}__~~" }.joinToString("")
+            get() = alphabet.map { if (it in guessed) "**$it**" else "~~__${it}__~~" }.joinToString(" ")
 
         val guessedPhrases: String
             get() = phrases.joinToString("\n")
