@@ -210,7 +210,7 @@ object ModuleHangman : IModule {
 
         if (hangman[channelobj] == null) {
             val hangmanObj = Hangman(word, message.author.name)
-            message.author.sendMessage("$word\n\nThis hangman is now running on $channelobj.")
+            message.author.sendMessage("$word\n\nThis hangman is now running on $channelobj.").get()
 
             hangmanObj.start(channelobj)
         } else {
