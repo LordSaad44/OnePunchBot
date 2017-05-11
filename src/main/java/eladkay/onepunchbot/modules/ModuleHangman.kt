@@ -165,7 +165,8 @@ object ModuleHangman : IModule {
             message.delete()
             val hangmanObj = hangman[message.channelReceiver]
             val phrase = message.content.replace("!guess", "").trim()
-            hangmanObj?.handleResult(message, hangmanObj.guessPhrase(phrase))
+            if ('@' !in phrase)
+                hangmanObj?.handleResult(message, hangmanObj.guessPhrase(phrase))
         } else if (message.channelReceiver != null && message.channelReceiver in hangman && message.content.startsWith("!executioner")) {
             val roles = message.author.getRoles(message.channelReceiver.server)
             val manage = roles.any { it.getOverwrittenPermissions(message.channelReceiver).getState(PermissionType.ADMINISTRATOR) == PermissionState.ALLOWED } ||
