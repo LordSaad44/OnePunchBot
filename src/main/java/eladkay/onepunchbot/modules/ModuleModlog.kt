@@ -21,8 +21,8 @@ object ModuleModlog : IModule {
     val handle = { a: String -> a.replace("`", "'"); "`$a`" }
 
     override fun onMessageDeleted(api: DiscordAPI, message: Message): Boolean {
-        if (message in ignoreMessages) {
-            ignoreMessages.remove(message)
+        if (ignoreMessages.any { it.id == message.id }) {
+            ignoreMessages.removeIf { it.id == message.id }
             return super.onMessageDeleted(api, message)
         }
 
@@ -37,7 +37,7 @@ object ModuleModlog : IModule {
     }
 
     override fun onMessageEdited(api: DiscordAPI, message: Message, old: String): Boolean {
-        if (message in ignoreMessages)
+        if (ignoreMessages.any { it.id == message.id })
             return super.onMessageEdited(api, message, old)
 
         val modlog = message.channelReceiver.server.getOrCreateChannel("modlog")

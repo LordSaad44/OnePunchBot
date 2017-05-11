@@ -129,7 +129,7 @@ object ModuleHangman : IModule {
         }
 
         val guessedLetters: String
-            get() = alphabet.map { if (it in guessed) it.toString() else "~~$it~~" }.joinToString("")
+            get() = alphabet.map { if (it in guessed) "**$it**" else "__~~${it}~~__" }.joinToString("")
 
         val guessedPhrases: String
             get() = phrases.joinToString("\n")
