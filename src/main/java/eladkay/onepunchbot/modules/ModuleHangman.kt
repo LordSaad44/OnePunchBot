@@ -32,6 +32,7 @@ object ModuleHangman : IModule {
             val last = lastMessage
             last?.delete()
             lastMessage = channel.sendMessage(createMessage()).get()
+            ModuleModlog.ignoreMessages.add(lastMessage!!)
         }
 
         fun endAndQueue(channel: Channel) {
