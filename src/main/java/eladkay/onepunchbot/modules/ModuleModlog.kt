@@ -8,14 +8,27 @@ import de.btobastian.javacord.entities.permissions.Role
 import eladkay.onepunchbot.IModule
 import eladkay.onepunchbot.WireDontTouchThisOrIllKillYouWhileYouSleep
 import eladkay.onepunchbot.getOrCreateChannel
+import eladkay.onepunchbot.startsWith
 
 /**
  * Created by Elad on 2/3/2017.
  */
 @WireDontTouchThisOrIllKillYouWhileYouSleep
 object ModuleModlog : IModule {
+
+    val ignoreMessages = mutableListOf<Message>()
+
+
     val handle = { a: String -> a.replace("`", "'"); "`$a`" }
+
     override fun onMessageDeleted(api: DiscordAPI, message: Message): Boolean {
+        if (ignoreMessages.any { it.id == message.id }) {
+            ignoreMessages.removeIf { it.id == message.id }
+            return super.onMessageDeleted(api, message)
+        }
+
+        if ("Hangman < ---- > Hangman" in message.content || message.startsWith("!hangman") || message.startsWith("!guess")) return super.onMessageDeleted(api, message)
+
         val modlog = message.channelReceiver.server.getOrCreateChannel("modlog")
         if (message.channelReceiver != modlog && "conduit" !in message.content) {
             if (":autorip:" !in message.content)
@@ -27,6 +40,9 @@ object ModuleModlog : IModule {
     }
 
     override fun onMessageEdited(api: DiscordAPI, message: Message, old: String): Boolean {
+        if (ignoreMessages.any { it.id == message.id })
+            return super.onMessageEdited(api, message, old)
+
         val modlog = message.channelReceiver.server.getOrCreateChannel("modlog")
         if (message.channelReceiver != modlog && message !in ModulePoll.polls.map { it.message })
             modlog.sendMessage("Message by ${message.author.name} edited: \"${handle(old)}\" -> \"${handle(message.content)}\" in channel #${message.channelReceiver.name}")

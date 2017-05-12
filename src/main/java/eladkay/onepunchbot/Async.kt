@@ -1,53 +1,68 @@
 package eladkay.onepunchbot
 
+import java.nio.channels.ClosedChannelException
+
 /**
  * @author WireSegal
  * Created at 2:32 PM on 5/7/17.
  */
 
+private val timeouts = mutableMapOf<Long, Thread>()
+private val intervals = mutableMapOf<Long, Thread>()
 
-private val waitingTimeouts = mutableMapOf<Int, Thread>()
-private val waitingIntervals = mutableMapOf<Int, Thread>()
-private var lastTime = 0
-private var lastInterval = 0
-
-fun setTimeout(millis: Long, code: () -> Unit): Int {
+fun setTimeout(millis: Long, code: () -> Unit): Long {
     val thread = Thread {
-        Thread.sleep(millis)
-        code()
-    }
-    val id = lastTime++
-    waitingTimeouts.put(id, thread)
-    thread.start()
-    return id
-}
-
-fun setInterval(millis: Long, code: () -> Unit): Int {
-    val thread = Thread {
-        while (true) {
+        try {
             Thread.sleep(millis)
             code()
+            timeouts.remove(Thread.currentThread().id)
+        } catch (e: Exception) {
+            if (e !is ClosedChannelException) {
+                val id = Thread.currentThread().id
+                println("Critical failure in timeout thread $id!")
+                timeouts.remove(id)
+            }
         }
     }
-    val id = lastInterval++
-    waitingIntervals.put(id, thread)
+
+    timeouts.put(thread.id, thread)
     thread.start()
-    return id
+    return thread.id
+}
+
+fun setInterval(millis: Long, code: () -> Unit): Long {
+    val thread = Thread {
+        try {
+            while (true) {
+                Thread.sleep(millis)
+                code()
+            }
+        } catch (e: Exception) {
+            if (e !is ClosedChannelException) {
+                val id = Thread.currentThread().id
+                println("Critical failure in interval thread $id!")
+                intervals.remove(id)
+            }
+        }
+    }
+    intervals.put(thread.id, thread)
+    thread.start()
+    return thread.id
 }
 
 
-fun clearTimeout(idCode: Int): Boolean {
-    val thread = waitingTimeouts[idCode] ?: return false
+fun clearTimeout(idCode: Long): Boolean {
+    val thread = timeouts[idCode] ?: return false
     if (!thread.isAlive) return false
     thread.interrupt()
-    waitingTimeouts.remove(idCode)
+    timeouts.remove(idCode)
     return true
 }
 
-fun clearInterval(idCode: Int): Boolean {
-    val thread = waitingIntervals[idCode] ?: return false
+fun clearInterval(idCode: Long): Boolean {
+    val thread = intervals[idCode] ?: return false
     if (!thread.isAlive) return false
     thread.interrupt()
-    waitingIntervals.remove(idCode)
+    intervals.remove(idCode)
     return true
 }
