@@ -71,6 +71,9 @@ object ModuleTTT : IModule {
             if (winner != null) {
                 message.reply("${winner.name} won!")
                 this.games[message.channelReceiver]!!.remove(game)
+            } else if(game.board.none { it.any { it == ' ' } }) {
+                message.reply("Tie!")
+                this.games[message.channelReceiver]!!.remove(game)
             }
         } else if (message.channelReceiver != null && message.channelReceiver in games && message.content == ("!clearttt")) {
             message.reply("TTT games cleared")
