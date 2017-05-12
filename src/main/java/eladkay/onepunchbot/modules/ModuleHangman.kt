@@ -3,12 +3,11 @@ package eladkay.onepunchbot.modules
 import de.btobastian.javacord.DiscordAPI
 import de.btobastian.javacord.entities.Channel
 import de.btobastian.javacord.entities.message.Message
-import de.btobastian.javacord.entities.message.embed.EmbedBuilder
 import de.btobastian.javacord.entities.permissions.PermissionState
 import de.btobastian.javacord.entities.permissions.PermissionType
 import eladkay.onepunchbot.IModule
 import eladkay.onepunchbot.LargeStringHolder
-import java.awt.Color
+import eladkay.onepunchbot.getOrCreateRole
 import java.util.*
 
 /**
@@ -170,7 +169,8 @@ object ModuleHangman : IModule {
             val roles = message.author.getRoles(message.channelReceiver.server)
             val manage = roles.any { it.getOverwrittenPermissions(message.channelReceiver).getState(PermissionType.ADMINISTRATOR) == PermissionState.ALLOWED } ||
                     roles.any { it.getOverwrittenPermissions(message.channelReceiver).getState(PermissionType.MANAGE_MESSAGES) == PermissionState.ALLOWED } ||
-                    message.channelReceiver.getOverwrittenPermissions(message.author).getState(PermissionType.MANAGE_MESSAGES) == PermissionState.ALLOWED
+                    message.channelReceiver.getOverwrittenPermissions(message.author).getState(PermissionType.MANAGE_MESSAGES) == PermissionState.ALLOWED ||
+                    hangman[message.channelReceiver]!!.creator == message.author.name || message.author in message.channelReceiver.server.getOrCreateRole("Admins").users
 
             message.delete()
             if (manage) {
@@ -182,6 +182,7 @@ object ModuleHangman : IModule {
     }
 
     fun start(args: List<String>, message: Message, api: DiscordAPI) {
+        message.delete()
         if (args.size < 3) {
             message.author.sendMessage("Invalid! Use: !hangman <channelid> <word>")
             return
@@ -212,14 +213,14 @@ object ModuleHangman : IModule {
 
         if (hangman[channelobj] == null) {
             val hangmanObj = Hangman(word, message.author.name)
-            message.author.sendMessage("$word\n\nThis hangman is now running on $channelobj.").get()
+            message.author.sendMessage("\"$word\" - This hangman is now running on $channelobj.").get()
 
             hangmanObj.start(channelobj)
         } else {
             val queue = q.getOrPut(channelobj) { ArrayDeque() }
             val position = queue.size + 1
             queue.add(Hangman(word, message.author.name))
-            message.author.sendMessage("$word\n\nThis hangman has now been queued on $channelobj. Position on queue: $position")
+            message.author.sendMessage("\"$word\" - This hangman has now been queued on $channelobj. Position on queue: $position")
         }
     }
 
