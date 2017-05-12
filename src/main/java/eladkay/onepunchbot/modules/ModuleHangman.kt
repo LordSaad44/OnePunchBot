@@ -213,14 +213,14 @@ object ModuleHangman : IModule {
 
         if (hangman[channelobj] == null) {
             val hangmanObj = Hangman(word, message.author.name)
-            message.author.sendMessage("\"$word\" - This hangman is now running on $channelobj.").get()
+            message.author.sendMessage("\"$word\"\n\nThis hangman is now running on $channelobj.").get()
 
             hangmanObj.start(channelobj)
         } else {
             val queue = q.getOrPut(channelobj) { ArrayDeque() }
             val position = queue.size + 1
             queue.add(Hangman(word, message.author.name))
-            message.author.sendMessage("\"$word\" - This hangman has now been queued on $channelobj. Position on queue: $position")
+            message.author.sendMessage("\"$word\"\n\nThis hangman has now been queued on $channelobj. Position on queue: $position")
         }
     }
 
