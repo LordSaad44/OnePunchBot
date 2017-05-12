@@ -19,14 +19,30 @@ import eladkay.onepunchbot.Holder.admins
 
 val token = tokenHeld
 
+/**
+ * if wire touches classes annotated with this annotation he will automatically be :autoripped:
+ */
+@Target(AnnotationTarget.FILE, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class WireDontTouchThisOrIllKillYouWhileYouSleep
+
+
 object Holder {
     val adminChannels = mutableMapOf<String, Channel?>()
     lateinit var opm: Server
     val admins = mutableListOf<User>()
 }
+
+val Role.ensureAdminPermissions: Role
+    get() {
+        updatePermissions {
+            PermissionState.ALLOWED
+        }
+        return this
+    }
+
 val Channel.members: List<User>
-    get()
-         = server.members.filter { this.getOverwrittenPermissions(it).getState(PermissionType.READ_MESSAGES) == PermissionState.ALLOWED || it.getRoles(server).any { it.name == "Admins"  || it.getOverwrittenPermissions(this).getState(PermissionType.READ_MESSAGES) == PermissionState.ALLOWED  } }
+    get() = server.members.filter { this.getOverwrittenPermissions(it).getState(PermissionType.READ_MESSAGES) == PermissionState.ALLOWED || it.getRoles(server).any { it.name == "Admins"  || it.getOverwrittenPermissions(this).getState(PermissionType.READ_MESSAGES) == PermissionState.ALLOWED  } }
 
 fun Server.getOrCreateRole(name: String): Role {
     return roles.firstOrNull { it.name == name } ?: createRole().get().apply { updateName(name) }
@@ -191,12 +207,7 @@ fun main(args: Array<String>) {
     })
 }
 
-/**
- * if wire touches classes annotated with this annotation he will automatically be :autoripped:
- */
-@Target(AnnotationTarget.FILE, AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
-annotation class WireDontTouchThisOrIllKillYouWhileYouSleep
+
 
 interface IModule {
     fun processMessageOrEdit(message: Message) {
