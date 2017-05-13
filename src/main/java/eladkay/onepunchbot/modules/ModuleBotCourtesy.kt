@@ -38,7 +38,7 @@ object ModuleBotCourtesy : IModule {
         }
 
         if (message.startsWith("!goto ")) {
-            val channelName = message.remove("!goto ")
+            val channelName = message.remove("!goto ").trim().replace("#", "")
             message.reply("(☞ﾟヮ ﾟ)☞ <#${message.channelReceiver.server.getChannel(channelName)?.id}> ☜(ﾟヮ ﾟ☜)")
         }
 
